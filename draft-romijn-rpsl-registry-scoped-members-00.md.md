@@ -3,8 +3,8 @@ stand_alone: true
 ipr: trust200902
 cat: info
 submissiontype: IETF
-area: ops
-wg: GROW
+area: 
+wg:
 
 docname: draft-romijn-rpsl-registry-scoped-members-00
 updates: 2622, 4012
@@ -132,7 +132,11 @@ not defined by this document.
 
 Existing IRR software will not be aware of the new `src-members` attribute
 and instead refer to `(mp-)members`.
-Existing IRR objects may not be updated with `src-members` for some time,
+This is also why the existing attributes can not be modified - this software
+would consider e.g. `RIPE::AS-EXAMPLE` as the full primary key, and fail
+to look up the reference as intended.
+
+Existing IRR objects may also not be updated with `src-members` for some time,
 as this can not be done automatically.
 Deployment in both software and objects will be a gradual process, however,
 even partial deployment will reduce the potential for issues from reference

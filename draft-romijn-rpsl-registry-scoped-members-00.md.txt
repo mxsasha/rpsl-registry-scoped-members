@@ -2,11 +2,11 @@
 
 
 
-GROW                                                           S. Romijn
+Network Working Group                                          S. Romijn
 Internet-Draft                                            Reliably Coded
-Updates: 2622, 4012 (if approved)                       27 November 2024
+Updates: 2622, 4012 (if approved)                       28 November 2024
 Intended status: Informational                                          
-Expires: 31 May 2025
+Expires: 1 June 2025
 
 
             Registry scoped membership for RPSL set objects
@@ -36,7 +36,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 31 May 2025.
+   This Internet-Draft will expire on 1 June 2025.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Romijn                     Expires 31 May 2025                  [Page 1]
+Romijn                     Expires 1 June 2025                  [Page 1]
 
 Internet-Draft  Registry scoped members for RPSL set obj   November 2024
 
@@ -76,10 +76,10 @@ Table of Contents
      2.2.  route-set class . . . . . . . . . . . . . . . . . . . . .   3
      2.3.  Resolving members through src-members . . . . . . . . . .   4
    3.  Relation to (mp-)members  . . . . . . . . . . . . . . . . . .   4
-     3.1.  Additional validation . . . . . . . . . . . . . . . . . .   4
+     3.1.  Additional validation . . . . . . . . . . . . . . . . . .   5
      3.2.  Automatic generation of (mp-)members  . . . . . . . . . .   5
      3.3.  Multiple references to the same primary key . . . . . . .   6
-   4.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   6
+   4.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   7
    5.  Security Considerations . . . . . . . . . . . . . . . . . . .   7
    6.  Normative References  . . . . . . . . . . . . . . . . . . . .   7
    Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   7
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Romijn                     Expires 31 May 2025                  [Page 2]
+Romijn                     Expires 1 June 2025                  [Page 2]
 
 Internet-Draft  Registry scoped members for RPSL set obj   November 2024
 
@@ -165,7 +165,7 @@ Internet-Draft  Registry scoped members for RPSL set obj   November 2024
 
 
 
-Romijn                     Expires 31 May 2025                  [Page 3]
+Romijn                     Expires 1 June 2025                  [Page 3]
 
 Internet-Draft  Registry scoped members for RPSL set obj   November 2024
 
@@ -200,15 +200,31 @@ Internet-Draft  Registry scoped members for RPSL set obj   November 2024
 3.  Relation to (mp-)members
 
    Existing IRR software will not be aware of the new src-members
-   attribute and instead refer to (mp-)members.  Existing IRR objects
-   may not be updated with src-members for some time, as this can not be
-   done automatically.  Deployment in both software and objects will be
-   a gradual process, however, even partial deployment will reduce the
-   potential for issues from reference mixups.
+   attribute and instead refer to (mp-)members.  This is also why the
+   existing attributes can not be modified - this software would
+   consider e.g.  RIPE::AS-EXAMPLE as the full primary key, and fail to
+   look up the reference as intended.
+
+   Existing IRR objects may also not be updated with src-members for
+   some time, as this can not be done automatically.  Deployment in both
+   software and objects will be a gradual process, however, even partial
+   deployment will reduce the potential for issues from reference
+   mixups.
 
    In order to keep support for existing IRR software, the contents of
    src-members must match (mp-)members as close as possible, which the
    IRR server can ensure.
+
+
+
+
+
+
+
+Romijn                     Expires 1 June 2025                  [Page 4]
+
+Internet-Draft  Registry scoped members for RPSL set obj   November 2024
+
 
 3.1.  Additional validation
 
@@ -218,13 +234,6 @@ Internet-Draft  Registry scoped members for RPSL set obj   November 2024
    registry names removed from set references.  All values MUST be
    combined, regardless if they were listed in one attribute, or in
    multiple repetitions of the attribute.
-
-
-
-Romijn                     Expires 31 May 2025                  [Page 4]
-
-Internet-Draft  Registry scoped members for RPSL set obj   November 2024
-
 
    This ensures that the new src-members can be used, providing the
    benefits for updated software, while still having a consistent
@@ -266,21 +275,18 @@ Internet-Draft  Registry scoped members for RPSL set obj   November 2024
 
    Specifically, for authoritative IRR registries:
 
+
+
+Romijn                     Expires 1 June 2025                  [Page 5]
+
+Internet-Draft  Registry scoped members for RPSL set obj   November 2024
+
+
    *  It is RECOMMENDED that when processing a route-set object with a
       src-members attribute, but without both a members and mp-members
       attribute, the software fills the mp-members attribute
       automatically with the contents of src-members, with IRR registry
       prefix removed from references.
-
-
-
-
-
-
-Romijn                     Expires 31 May 2025                  [Page 5]
-
-Internet-Draft  Registry scoped members for RPSL set obj   November 2024
-
 
    *  It is RECOMMENDED that when processing an as-set object with a
       src-members attribute, but without a members attribute, the
@@ -322,21 +328,19 @@ Internet-Draft  Registry scoped members for RPSL set obj   November 2024
    intentionally include multiple objects that have the same primary key
    in their respective IRR registries.
 
-4.  IANA Considerations
-
-   This memo includes no request to IANA.
 
 
 
 
 
-
-
-
-Romijn                     Expires 31 May 2025                  [Page 6]
+Romijn                     Expires 1 June 2025                  [Page 6]
 
 Internet-Draft  Registry scoped members for RPSL set obj   November 2024
 
+
+4.  IANA Considerations
+
+   This memo includes no request to IANA.
 
 5.  Security Considerations
 
@@ -385,8 +389,4 @@ Author's Address
 
 
 
-
-
-
-
-Romijn                     Expires 31 May 2025                  [Page 7]
+Romijn                     Expires 1 June 2025                  [Page 7]
