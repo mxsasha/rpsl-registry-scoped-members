@@ -1,0 +1,392 @@
+
+
+
+
+GROW                                                           S. Romijn
+Internet-Draft                                            Reliably Coded
+Updates: 2622, 4012 (if approved)                       27 November 2024
+Intended status: Informational                                          
+Expires: 31 May 2025
+
+
+            Registry scoped membership for RPSL set objects
+              draft-romijn-rpsl-registry-scoped-members-00
+
+Abstract
+
+   This document specifies src-members, a new attribute on as-set and
+   route-set objects in the Routing Policy Specification Language
+   (RPSL).  This attribute allows references between sets to include a
+   specific registry name, avoiding problematic ambiguity while
+   resolving.  A new validation rule allows gradual upgrades and
+   backwards compatibility.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at https://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on 31 May 2025.
+
+Copyright Notice
+
+   Copyright (c) 2024 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+
+
+
+
+
+
+
+
+
+
+Romijn                     Expires 31 May 2025                  [Page 1]
+
+Internet-Draft  Registry scoped members for RPSL set obj   November 2024
+
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents (https://trustee.ietf.org/
+   license-info) in effect on the date of publication of this document.
+   Please review these documents carefully, as they describe your rights
+   and restrictions with respect to this document.  Code Components
+   extracted from this document must include Revised BSD License text as
+   described in Section 4.e of the Trust Legal Provisions and are
+   provided without warranty as described in the Revised BSD License.
+
+Table of Contents
+
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
+     1.1.  Requirements Language . . . . . . . . . . . . . . . . . .   3
+   2.  The src-members attribute . . . . . . . . . . . . . . . . . .   3
+     2.1.  as-set class  . . . . . . . . . . . . . . . . . . . . . .   3
+     2.2.  route-set class . . . . . . . . . . . . . . . . . . . . .   3
+     2.3.  Resolving members through src-members . . . . . . . . . .   4
+   3.  Relation to (mp-)members  . . . . . . . . . . . . . . . . . .   4
+     3.1.  Additional validation . . . . . . . . . . . . . . . . . .   4
+     3.2.  Automatic generation of (mp-)members  . . . . . . . . . .   5
+     3.3.  Multiple references to the same primary key . . . . . . .   6
+   4.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   6
+   5.  Security Considerations . . . . . . . . . . . . . . . . . . .   7
+   6.  Normative References  . . . . . . . . . . . . . . . . . . . .   7
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   7
+
+1.  Introduction
+
+   The Routing Policy Specification Language (RPSL) [RFC2622] defines
+   the as-set and route-set objects, extended in [RFC4012].  These are
+   among the most common objects in Internet Routing Registry (IRR)
+   registries.  These sets often reference other sets as well through
+   their members and mp-members attributes [RFC4012].  Server and client
+   software can follow these references to resolve a set down to its
+   members, a set of prefixes or ASes.
+
+   However:
+
+   1.  There are multiple large IRR registries (and often, many are
+       loaded in one IRR server).
+
+   2.  Sets often reference sets in other registries.
+
+   3.  There is no uniqueness in set names amongst the different
+       registries.
+
+   4.  Hence, multiple objects may exist in the same server with the
+       same name, making references to them ambiguous.
+
+
+
+Romijn                     Expires 31 May 2025                  [Page 2]
+
+Internet-Draft  Registry scoped members for RPSL set obj   November 2024
+
+
+   There is no current way to prevent such ambiguity, both for operators
+   who create the legitimate objects and those who try to resolve them.
+
+   While not defined in the standard, most IRRs allow scoping a set name
+   to an ASN by using single colons, e.g.  AS65000:AS-EXAMPLE, possibly
+   with authorization required through aut-num AS65000.  However, this
+   authorization only works within a single IRR registry.  It only helps
+   for some accidental conflicts.
+
+   To solve this, this documents adds src-members to as-set and route-
+   set objects, using a IRR registry name prefix with a double colon.
+   For example, "RIPE::AS-EXAMPLE", a format already used by operators
+   informally.  Continued availability of existing (mp-)members
+   attributes together with new validation rules, ensures backwards
+   compatibility.
+
+1.1.  Requirements Language
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+   "OPTIONAL" in this document are to be interpreted as described in
+   BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
+   capitals, as shown here.
+
+2.  The src-members attribute
+
+2.1.  as-set class
+
+   The new src-members attribute on as-set is similar to the members
+   attribute from [RFC2622], except that the AS set name MUST be
+   prefixed with a registry name.
+
+   Attribute:
+      src-members
+
+   Value:
+      list of ([as-number] or [registry-name]::[as-set-name])
+
+   Type:
+      optional, multi-valued
+
+2.2.  route-set class
+
+   The new src-members attribute on as-set is similar to the mp-members
+   attribute from [RFC4012], except that any references to set names
+   MUST be prefixed with a registry name.
+
+   Attribute:
+
+
+
+Romijn                     Expires 31 May 2025                  [Page 3]
+
+Internet-Draft  Registry scoped members for RPSL set obj   November 2024
+
+
+      src-members
+
+   Value:
+      list of ([ipv4-address-prefix-range] or [ipv6-address-prefix-
+      range] or [registry-name]::[route-set-name] or [registry-
+      name]::[as-set-name] or [as-number] or [registry-name]::[route-
+      set-name][range-operator])
+
+   Type:
+      optional, multi-valued
+
+2.3.  Resolving members through src-members
+
+   When IRR software is resolving the members of a set which has a src-
+   members attribute, the resolver MUST NOT consider the contents of the
+   members or mp-members attribute.
+
+   To find the referred set, the resolver MUST match on both the IRR
+   registry name and the set's primary key.  If the IRR registry is
+   unknown to the resolver, no set can match the reference.
+
+   When an as-set/route-set does not contain an src-members attribute,
+   the resolver SHOULD consider the values of members and mp-members.
+   If references are found to a set, and there are multiple sets with
+   this primary key known to the resolver, the behavior is not defined
+   by this document.
+
+3.  Relation to (mp-)members
+
+   Existing IRR software will not be aware of the new src-members
+   attribute and instead refer to (mp-)members.  Existing IRR objects
+   may not be updated with src-members for some time, as this can not be
+   done automatically.  Deployment in both software and objects will be
+   a gradual process, however, even partial deployment will reduce the
+   potential for issues from reference mixups.
+
+   In order to keep support for existing IRR software, the contents of
+   src-members must match (mp-)members as close as possible, which the
+   IRR server can ensure.
+
+3.1.  Additional validation
+
+   When an authoritative IRR registry processes a set object with a src-
+   members attribute, it MUST ensure that the union of values in members
+   and mp-members is equal to the values of src-members with the
+   registry names removed from set references.  All values MUST be
+   combined, regardless if they were listed in one attribute, or in
+   multiple repetitions of the attribute.
+
+
+
+Romijn                     Expires 31 May 2025                  [Page 4]
+
+Internet-Draft  Registry scoped members for RPSL set obj   November 2024
+
+
+   This ensures that the new src-members can be used, providing the
+   benefits for updated software, while still having a consistent
+   (mp-)members available for older software.
+
+   IRR registry software is RECOMMENDED to make the src-members
+   attribute mandatory on all new as-set/route-set objects, and MAY make
+   it required when modifying existing objects.
+
+   Example of a valid object:
+
+   route-set: RS-EXAMPLE
+   members: 192.0.2.0/24
+   mp-members: 2001:db8::/32
+   mp-members: RS-OTHER
+   src-members: 192.0.2.0/24, RIPE::RS-OTHER, 2001:db8::/32
+   source: EXAMPLE
+
+                           Figure 1: Valid object
+
+   Example of an invalid object:
+
+   route-set: RS-EXAMPLE
+   members: 192.0.2.0/24
+   mp-members: 2001:db8::/36
+   mp-members: RS-OTHER, RS-MPMBRONLY
+   src-members: 192.0.2.0/24, RIPE::RS-OTHER
+   src-members: NTTCOM::RS-SRCMBRONLY, 2001:db8::/32
+   source: EXAMPLE
+
+     Figure 2: Invalid object: inconsistent inclusion of RS-MPMBRONLY,
+              NTTCOM::RS- SRCMBRONLY, and 200:db8::/36 vs /32
+
+3.2.  Automatic generation of (mp-)members
+
+   Managing multiple copies of the same records is tedious for users.
+   Therefore, IRR registry software is RECOMMENDED to automatically fill
+   (mp-)members, if not specified by the user, based on src-members.
+
+   Specifically, for authoritative IRR registries:
+
+   *  It is RECOMMENDED that when processing a route-set object with a
+      src-members attribute, but without both a members and mp-members
+      attribute, the software fills the mp-members attribute
+      automatically with the contents of src-members, with IRR registry
+      prefix removed from references.
+
+
+
+
+
+
+Romijn                     Expires 31 May 2025                  [Page 5]
+
+Internet-Draft  Registry scoped members for RPSL set obj   November 2024
+
+
+   *  It is RECOMMENDED that when processing an as-set object with a
+      src-members attribute, but without a members attribute, the
+      software fills the members attribute automatically with the
+      contents of src-members, with IRR registry prefix removed from
+      references.
+
+   The registry MAY return an informational message to the user about
+   the modifications.  The objects MUST NOT be modified if already
+   submitted with any members or mp-members attribute, though the
+   validation rules noted above must still be applied.
+
+   IRR registry software MUST NOT attempt to automatically derive src-
+   members from (mp-)members, as this can not be done reliably.
+
+3.3.  Multiple references to the same primary key
+
+   _Note for review: this option is questionable.  The risk is that the
+   difference_ _in interpretation between legacy members and new src-
+   members increases._
+
+   Adding a IRR registry scope to each reference allows a new behavior:
+
+   as-set: AS-EXAMPLE
+   members: AS-OTHER
+   src-members: RIPE::AS-OTHER, ARIN::AS-OTHER
+   source: EXAMPLE
+
+      Figure 3: Valid object using multiple registry prefixes with the
+                           same RPSL primary key
+
+   Assuming both RIPE and ARIN have an as-set with primary key AS-OTHER,
+   the [RFC2622] interpretation of this members attribute is ambiguous
+   in which object is referenced.  It is however clear that it refers to
+   one of them.
+
+   The new option of src-members not only allows defining which single
+   object was meant to be referenced, but also allows operators to
+   intentionally include multiple objects that have the same primary key
+   in their respective IRR registries.
+
+4.  IANA Considerations
+
+   This memo includes no request to IANA.
+
+
+
+
+
+
+
+
+Romijn                     Expires 31 May 2025                  [Page 6]
+
+Internet-Draft  Registry scoped members for RPSL set obj   November 2024
+
+
+5.  Security Considerations
+
+   This document removes a potential security issue where routing policy
+   could be manipulated by maliciously creating set objects, which could
+   be picked over legitimate objects.
+
+   While not a new issue, references between set objects may be
+   circular, and software must detect such cases while resolving.  It
+   may also choose to limit depth or size of their resolving to avoid
+   excessive resource use.
+
+6.  Normative References
+
+   [RFC2622]  Alaettinoglu, C., Villamizar, C., Gerich, E., Kessens, D.,
+              Meyer, D., Bates, T., Karrenberg, D., and M. Terpstra,
+              "Routing Policy Specification Language (RPSL)", RFC 2622,
+              DOI 10.17487/RFC2622, June 1999,
+              <https://www.rfc-editor.org/rfc/rfc2622>.
+
+   [RFC4012]  Blunk, L., Damas, J., Parent, F., and A. Robachevsky,
+              "Routing Policy Specification Language next generation
+              (RPSLng)", RFC 4012, DOI 10.17487/RFC4012, March 2005,
+              <https://www.rfc-editor.org/rfc/rfc4012>.
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
+              <https://www.rfc-editor.org/rfc/rfc2119>.
+
+   [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
+              2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
+              May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
+
+Author's Address
+
+   Sasha Romijn
+   Reliably Coded
+   Amsterdam
+   Netherlands
+   Email: sasha@reliablycoded.nl
+
+
+
+
+
+
+
+
+
+
+
+Romijn                     Expires 31 May 2025                  [Page 7]
