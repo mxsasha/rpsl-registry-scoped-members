@@ -52,12 +52,18 @@ attributes {{RFC4012}}.
 Server and client software can follow these references to 
 resolve a set down to its members, a set of prefixes or ASes.
 
-However\:
+A set may refer to another set by including the primary key in its
+`(mp-)members` attribute, which may be in the same, or another IRR registry.
+It is not possible to specify the IRR registry of
+the referred set. This makes it primary key collisions possible
+when resolving a set\:
 
-1. There are multiple large IRR registries (and often, many are loaded in one IRR server).
-1. Sets often reference sets in other registries.
-1. There is no uniqueness in set names amongst the different registries.
-1. Hence, multiple objects may exist in the same server with the same name, making references to them ambiguous.
+1. There are multiple significant IRR registries.
+1. Sets often reference objects in registries other than the registry the set itself is stored in.
+1. There is no guaranteed uniqueness of object primary keys amongst the different registries.
+1. Hence, multiple objects may exist in the IRR system with the same name, making references to them ambiguous.
+1. Many IRR servers will mirror data from multiple IRRs, meaning that even within
+   a single server, there are usually collisions.
 
 There is no current way to prevent such ambiguity, both for operators who create the legitimate objects
 and those who try to resolve them.
