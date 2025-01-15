@@ -9,7 +9,7 @@ wg:
 docname: draft-romijn-rpsl-registry-scoped-members-00
 updates: 2622, 4012
 
-title: Registry scoped membership for RPSL set objects
+title: Registry scoped members for RPSL set objects
 abbrev: Registry scoped members for RPSL set objects
 lang: en
 kw:
