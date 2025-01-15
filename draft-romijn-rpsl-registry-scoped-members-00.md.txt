@@ -4,22 +4,22 @@
 
 Network Working Group                                          S. Romijn
 Internet-Draft                                            Reliably Coded
-Updates: 2622, 4012 (if approved)                       28 November 2024
+Updates: 2622, 4012 (if approved)                        15 January 2025
 Intended status: Informational                                          
-Expires: 1 June 2025
+Expires: 19 July 2025
 
 
-            Registry scoped membership for RPSL set objects
+              Registry scoped members for RPSL set objects
               draft-romijn-rpsl-registry-scoped-members-00
 
 Abstract
 
-   This document specifies src-members, a new attribute on as-set and
-   route-set objects in the Routing Policy Specification Language
-   (RPSL).  This attribute allows references between sets to include a
-   specific registry name, avoiding problematic ambiguity while
-   resolving.  A new validation rule allows gradual upgrades and
-   backwards compatibility.
+   This document updates [RFC2622] and [RFC4012] by specifying src-
+   members, a new attribute on as-set and route-set objects in the
+   Routing Policy Specification Language (RPSL).  This attribute allows
+   a specific registry to be specified for each member in a set,
+   avoiding problematic ambiguity when resolving set members.  A new
+   validation rule allows gradual upgrades and backwards compatibility.
 
 Status of This Memo
 
@@ -36,11 +36,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 1 June 2025.
+   This Internet-Draft will expire on 19 July 2025.
 
 Copyright Notice
 
-   Copyright (c) 2024 IETF Trust and the persons identified as the
+   Copyright (c) 2025 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
 
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Romijn                     Expires 1 June 2025                  [Page 1]
+Romijn                    Expires 19 July 2025                  [Page 1]
 
-Internet-Draft  Registry scoped members for RPSL set obj   November 2024
+Internet-Draft  Registry scoped members for RPSL set obj    January 2025
 
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -70,65 +70,118 @@ Internet-Draft  Registry scoped members for RPSL set obj   November 2024
 Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
-     1.1.  Requirements Language . . . . . . . . . . . . . . . . . .   3
-   2.  The src-members attribute . . . . . . . . . . . . . . . . . .   3
-     2.1.  as-set class  . . . . . . . . . . . . . . . . . . . . . .   3
-     2.2.  route-set class . . . . . . . . . . . . . . . . . . . . .   3
-     2.3.  Resolving members through src-members . . . . . . . . . .   4
-   3.  Relation to (mp-)members  . . . . . . . . . . . . . . . . . .   4
-     3.1.  Additional validation . . . . . . . . . . . . . . . . . .   5
-     3.2.  Automatic generation of (mp-)members  . . . . . . . . . .   5
-     3.3.  Multiple references to the same primary key . . . . . . .   6
-   4.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   7
-   5.  Security Considerations . . . . . . . . . . . . . . . . . . .   7
-   6.  Normative References  . . . . . . . . . . . . . . . . . . . .   7
-   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   7
+     1.1.  Requirements Language . . . . . . . . . . . . . . . . . .   4
+   2.  The src-members attribute . . . . . . . . . . . . . . . . . .   4
+     2.1.  as-set class  . . . . . . . . . . . . . . . . . . . . . .   4
+     2.2.  route-set class . . . . . . . . . . . . . . . . . . . . .   4
+     2.3.  Resolving members through src-members . . . . . . . . . .   5
+   3.  Relation to (mp-)members  . . . . . . . . . . . . . . . . . .   5
+     3.1.  Additional validation . . . . . . . . . . . . . . . . . .   6
+     3.2.  Automatic generation of (mp-)members  . . . . . . . . . .   6
+     3.3.  Multiple references to the same primary key . . . . . . .   7
+   4.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   8
+   5.  Security Considerations . . . . . . . . . . . . . . . . . . .   8
+   6.  Normative References  . . . . . . . . . . . . . . . . . . . .   8
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   8
 
 1.  Introduction
 
    The Routing Policy Specification Language (RPSL) [RFC2622] defines
    the as-set and route-set objects, extended in [RFC4012].  These are
-   among the most common objects in Internet Routing Registry (IRR)
-   registries.  These sets often reference other sets as well through
-   their members and mp-members attributes [RFC4012].  Server and client
-   software can follow these references to resolve a set down to its
-   members, a set of prefixes or ASes.
+   among the most common objects in the Internet Routing Registry (IRR)
+   system.  These sets can either reference a direct member of the set
+   (such as an AS number, IP prefix, etc.), or additional sets which
+   themselves have their own direct members and/or reference yet more
+   sets, ad infinitum.  In both cases, this referencing uses the members
+   and mp-members attributes [RFC4012].  Server and client software can
+   follow these references to resolve a set down to its members, a set
+   of prefixes or ASes.
 
-   However:
+   A set may refer to another set by including the primary key in its
+   (mp-)members attribute, which may be in the same, or another IRR
+   registry.  It is not possible to specify the IRR registry of the
+   referred set.  This makes it primary key collisions possible when
+   resolving a set:
 
-   1.  There are multiple large IRR registries (and often, many are
-       loaded in one IRR server).
-
-   2.  Sets often reference sets in other registries.
-
-   3.  There is no uniqueness in set names amongst the different
-       registries.
-
-   4.  Hence, multiple objects may exist in the same server with the
-       same name, making references to them ambiguous.
+   1.  There are multiple significant IRR registries.
 
 
 
-Romijn                     Expires 1 June 2025                  [Page 2]
+
+
+Romijn                    Expires 19 July 2025                  [Page 2]
 
-Internet-Draft  Registry scoped members for RPSL set obj   November 2024
+Internet-Draft  Registry scoped members for RPSL set obj    January 2025
 
 
-   There is no current way to prevent such ambiguity, both for operators
-   who create the legitimate objects and those who try to resolve them.
+   2.  Sets often reference objects in registries other than the
+       registry the set itself is stored in.
 
-   While not defined in the standard, most IRRs allow scoping a set name
-   to an ASN by using single colons, e.g.  AS65000:AS-EXAMPLE, possibly
-   with authorization required through aut-num AS65000.  However, this
-   authorization only works within a single IRR registry.  It only helps
-   for some accidental conflicts.
+   3.  There is no guaranteed uniqueness of object primary keys amongst
+       the different registries.
+
+   4.  Hence, multiple objects may exist in the IRR system with the same
+       name, making references to them ambiguous.
+
+   5.  Many IRR servers will mirror data from multiple IRRs, meaning
+       that even within a single server, there are usually collisions.
+
+   The ambiguity encountered when resolving set members can result in
+   either an incorrect RPSL object being chosen, because an object with
+   the same primary key was retrieved from the wrong IRR registry, or
+   the required RPSL object (which does exist) is not found, because the
+   resolving process didn't try to retrieve the object from the correct
+   IRR registry.  "Incorrect" and "wrong" in this context meaning: not
+   as intended or expected by the operator.
+
+   With the former case, the result can be that unintentional routing
+   policy information maybe be computed and deployed to network
+   infrastructure, which could aid in route leaking, and in the worst
+   case, route hijacking.  This has been seen multiple times on the
+   public Internet.
+
+   With either case, routing policy information may end up missing and
+   connectivity may be disrupted.
+
+   There is no current way to prevent such ambiguity during set member
+   resolution, both for operators who create the legitimate objects and
+   those who try to resolve them.
+
+   Two previous enhancements to reduce set name collisions have been
+   standardized. however, the problem persists:
+
+   *  [RFC2622] Section 5.1 defines hierarchical set names, such as
+      AS65000:AS-EXAMPLE which may also have additional authorization
+      requirements for the referred aut-num.  However, this
+      authorization only works within a single IRR registry, and doesn't
+      allow the correct external IRR to be specified, if the object in
+      question is not local to the IRR registry storing the referring
+      set.
+
+
+
+
+
+
+
+
+Romijn                    Expires 19 July 2025                  [Page 3]
+
+Internet-Draft  Registry scoped members for RPSL set obj    January 2025
+
+
+   *  [RFC2725] Section 9.6 defines external repository (IRR)
+      references.  This allows for the correct IRR registry to be
+      specified for a set member object by using the SOURCE:: notation
+      however, this syntax isn't supported in the members filed of set
+      objects.
 
    To solve this, this documents adds src-members to as-set and route-
    set objects, using a IRR registry name prefix with a double colon.
    For example, "RIPE::AS-EXAMPLE", a format already used by operators
-   informally.  Continued availability of existing (mp-)members
-   attributes together with new validation rules, ensures backwards
-   compatibility.
+   informally, for example in PeeringDB.  Continued availability of
+   existing (mp-)members attributes together with new validation rules,
+   ensures backwards compatibility.
 
 1.1.  Requirements Language
 
@@ -162,17 +215,17 @@ Internet-Draft  Registry scoped members for RPSL set obj   November 2024
    MUST be prefixed with a registry name.
 
    Attribute:
-
-
-
-Romijn                     Expires 1 June 2025                  [Page 3]
-
-Internet-Draft  Registry scoped members for RPSL set obj   November 2024
-
-
       src-members
 
    Value:
+
+
+
+Romijn                    Expires 19 July 2025                  [Page 4]
+
+Internet-Draft  Registry scoped members for RPSL set obj    January 2025
+
+
       list of ([ipv4-address-prefix-range] or [ipv6-address-prefix-
       range] or [registry-name]::[route-set-name] or [registry-
       name]::[as-set-name] or [as-number] or [registry-name]::[route-
@@ -221,9 +274,12 @@ Internet-Draft  Registry scoped members for RPSL set obj   November 2024
 
 
 
-Romijn                     Expires 1 June 2025                  [Page 4]
+
+
+
+Romijn                    Expires 19 July 2025                  [Page 5]
 
-Internet-Draft  Registry scoped members for RPSL set obj   November 2024
+Internet-Draft  Registry scoped members for RPSL set obj    January 2025
 
 
 3.1.  Additional validation
@@ -277,9 +333,9 @@ Internet-Draft  Registry scoped members for RPSL set obj   November 2024
 
 
 
-Romijn                     Expires 1 June 2025                  [Page 5]
+Romijn                    Expires 19 July 2025                  [Page 6]
 
-Internet-Draft  Registry scoped members for RPSL set obj   November 2024
+Internet-Draft  Registry scoped members for RPSL set obj    January 2025
 
 
    *  It is RECOMMENDED that when processing a route-set object with a
@@ -333,9 +389,9 @@ Internet-Draft  Registry scoped members for RPSL set obj   November 2024
 
 
 
-Romijn                     Expires 1 June 2025                  [Page 6]
+Romijn                    Expires 19 July 2025                  [Page 7]
 
-Internet-Draft  Registry scoped members for RPSL set obj   November 2024
+Internet-Draft  Registry scoped members for RPSL set obj    January 2025
 
 
 4.  IANA Considerations
@@ -361,6 +417,11 @@ Internet-Draft  Registry scoped members for RPSL set obj   November 2024
               DOI 10.17487/RFC2622, June 1999,
               <https://www.rfc-editor.org/rfc/rfc2622>.
 
+   [RFC2725]  Villamizar, C., Alaettinoglu, C., Meyer, D., and S.
+              Murphy, "Routing Policy System Security", RFC 2725,
+              DOI 10.17487/RFC2725, December 1999,
+              <https://www.rfc-editor.org/rfc/rfc2725>.
+
    [RFC4012]  Blunk, L., Damas, J., Parent, F., and A. Robachevsky,
               "Routing Policy Specification Language next generation
               (RPSLng)", RFC 4012, DOI 10.17487/RFC4012, March 2005,
@@ -381,6 +442,14 @@ Author's Address
    Reliably Coded
    Amsterdam
    Netherlands
+
+
+
+Romijn                    Expires 19 July 2025                  [Page 8]
+
+Internet-Draft  Registry scoped members for RPSL set obj    January 2025
+
+
    Email: sasha@reliablycoded.nl
 
 
@@ -389,4 +458,47 @@ Author's Address
 
 
 
-Romijn                     Expires 1 June 2025                  [Page 7]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Romijn                    Expires 19 July 2025                  [Page 9]
