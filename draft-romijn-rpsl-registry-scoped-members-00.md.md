@@ -43,7 +43,7 @@ A new validation rule allows gradual upgrades and backwards compatibility.
 
 The Routing Policy Specification Language (RPSL) {{RFC2622}} defines the
 as-set and route-set objects, extended in {{RFC4012}}.
-These are among the most common objects in Internet Routing Registry (IRR) registries.
+These are among the most common objects in the Internet Routing Registry (IRR) system.
 These sets can either reference a direct member of the set
 (such as an AS number, IP prefix, etc.), or additional sets which themselves have
 their own direct members and/or reference yet more sets, ad infinitum.
