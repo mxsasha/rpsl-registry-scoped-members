@@ -30,7 +30,8 @@ informative:
 
 --- abstract
 
-This document specifies `src-members`, a new attribute on as-set and route-set
+This document updates {{RFC2622}} and {{RFC4012}} by specifying `src-members`,
+a new attribute on as-set and route-set
 objects in the Routing Policy Specification Language (RPSL).
 This attribute allows references between sets to include a specific
 registry name, avoiding problematic ambiguity while resolving.
