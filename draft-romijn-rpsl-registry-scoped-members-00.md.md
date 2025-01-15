@@ -90,7 +90,8 @@ It only helps for some accidental conflicts.
 
 To solve this, this documents adds `src-members` to as-set and route-set objects,
 using a IRR registry name prefix with a double colon.
-For example, "RIPE::AS-EXAMPLE", a format already used by operators informally.
+For example, "RIPE::AS-EXAMPLE", a format already used by operators informally,
+for example in PeeringDB.
 Continued availability of existing `(mp-)members` attributes
 together with new validation rules, ensures backwards compatibility.
 
