@@ -25,6 +25,7 @@ author:
 
 normative:
   RFC2622:
+  RFC2725:
   RFC4012:
 informative:
 
@@ -82,11 +83,18 @@ may be disrupted.
 
 There is no current way to prevent such ambiguity during set member resolution, both for operators who create the legitimate objects and those who try to resolve them.
 
-While not defined in the standard,
-most IRRs allow scoping a set name to an ASN by using single colons, e.g. `AS65000:AS-EXAMPLE`, possibly
-with authorization required through aut-num AS65000.
-However, this authorization only works within a single IRR registry.
-It only helps for some accidental conflicts.
+Two previous enhancements to reduce set name collisions have been standardized.
+however, the problem persists\:
+
+- {{RFC2622}} Section 5.1 defines hierarchical set names, such as `AS65000:AS-EXAMPLE`
+  which may also have additional authorization requirements for the referred aut-num.
+  However, this authorization only works within a single IRR registry, and doesn't
+  allow the correct external IRR to be specified, if the object in question is not
+  local to the IRR registry storing the referring set.
+- {{RFC2725}} Section 9.6 defines external repository (IRR) references.
+  This allows for the correct IRR registry to be specified for a set member object
+  by using the SOURCE:: notation however, this syntax isn't supported in the members
+  filed of set objects.
 
 To solve this, this documents adds `src-members` to as-set and route-set objects,
 using a IRR registry name prefix with a double colon.
