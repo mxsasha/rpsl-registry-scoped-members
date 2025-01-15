@@ -65,8 +65,22 @@ when resolving a set\:
 1. Many IRR servers will mirror data from multiple IRRs, meaning that even within
    a single server, there are usually collisions.
 
-There is no current way to prevent such ambiguity, both for operators who create the legitimate objects
-and those who try to resolve them.
+The ambiguity encountered when resolving set members can result in either an
+incorrect RPSL object being chosen, because an object with the same primary key
+was retrieved from the wrong IRR registry, or the required RPSL object (which does exist)
+is not found, because the resolving process didn't try to retrieve the object from
+the correct IRR registry.
+"Incorrect" and "wrong" in this context meaning\: not as intended or expected by the operator.
+
+With the former case, the result can be that unintentional routing policy information
+maybe be computed and deployed to network infrastructure, which could aid in route leaking,
+and in the worst case, route hijacking.
+This has been seen multiple times on the public Internet.
+
+With either case, routing policy information may end up missing and connectivity
+may be disrupted.
+
+There is no current way to prevent such ambiguity during set member resolution, both for operators who create the legitimate objects and those who try to resolve them.
 
 While not defined in the standard,
 most IRRs allow scoping a set name to an ASN by using single colons, e.g. `AS65000:AS-EXAMPLE`, possibly
