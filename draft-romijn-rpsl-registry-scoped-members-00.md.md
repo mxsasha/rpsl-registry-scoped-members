@@ -145,10 +145,11 @@ Value:
 Type:
 : optional, multi-valued
 
-## Resolving members through `src-members`
+## Resolving members through `src-members` {#resolving}
 
 When IRR software is resolving the members of a set which has a `src-members`
-attribute, the resolver MUST NOT consider the contents of the `members` or `mp-members`
+attribute as part of a query,
+the resolver MUST NOT consider the contents of the `members` or `mp-members`
 attribute. This is consistent with {{RFC2622}} section 10.2.
 
 To find the referred set, the resolver MUST match on both the IRR registry
@@ -226,6 +227,12 @@ for older software.
 IRR registry software is RECOMMENDED to make the `src-members` attribute
 mandatory on all new as-set/route-set objects, and MAY make it required when modifying
 existing objects.
+
+This may appear to conflict with the [section on resolving](#resolving),
+which says IRR software must not consider `(mp-)members` when `src-members`
+is present. However, that section is about resolving a query on IRR data,
+this section is about processing object creation and modification 
+in software that is authoritative for the IRR registry.
 
 Example of a valid object\:
 
