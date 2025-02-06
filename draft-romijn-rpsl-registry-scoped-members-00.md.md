@@ -242,7 +242,7 @@ The registry MAY return an informational message to the user about
 the modifications.
 The objects MUST NOT be modified if already submitted with any
 `members` or `mp-members` attribute, though the validation rules noted
-above must still be applied.
+above MUST still be applied.
 
 IRR registry software MUST NOT attempt to automatically derive
 `src-members` from `(mp-)members`, as this can not be done reliably.
