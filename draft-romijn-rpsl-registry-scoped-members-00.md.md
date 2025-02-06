@@ -161,6 +161,37 @@ If references are found to a set, and there are multiple sets
 with this primary key known to the resolver, the behavior is
 not defined by this document.
 
+Note that the restriction to a specific IRR registry name is only used
+to select the correct IRR registry to retrieve the referred object and its
+attributes.
+When recursive resolving, if that set has references to further sets,
+those MUST be retrieved from a potentially different registry (either the
+registry specified in the `src-members` attribute if that attribute is present,
+or the existing source selection algorithm the IRR server currently uses if
+resolving using `(mp-)members`. In other words, the restriction of the lookup
+to a specific IRR registry does not cascade.
+
+Example\:
+
+~~~~ rpsl
+route-set: RS-FIRST
+src-members: RIPE::RS-SECOND
+source: EXAMPLE
+
+route-set: RS-SECOND
+members: RS-THIRD
+source: RIPE
+
+route-set: RS-THIRD
+members: AS65000
+source: OTHER
+~~~~
+{: title='Objects for recursive lookups'}
+
+To perform a recursive resolve of RS-FIRST, the IRR software
+looks up RS-FIRST, then looks up RS-SECOND in the RIPE registry,
+then looks for RS-THIRD in any registry enabled for this query.
+If all mentioned registries are enabled, RS-FIRST would resolve to AS64500.
 
 # Relation to `(mp-)members`
 
