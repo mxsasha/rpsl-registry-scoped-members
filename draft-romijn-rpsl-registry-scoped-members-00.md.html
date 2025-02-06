@@ -1506,14 +1506,15 @@ be prefixed with a registry name.<a href="#section-2.2-1" class="pilcrow">¶</a>
 </dl>
 </section>
 </div>
-<div id="resolving-members-through-src-members">
+<div id="resolving">
 <section id="section-2.3">
         <h3 id="name-resolving-members-through-s">
 <a href="#section-2.3" class="section-number selfRef">2.3. </a><a href="#name-resolving-members-through-s" class="section-name selfRef">Resolving members through <code>src-members</code></a>
         </h3>
 <p id="section-2.3-1">When IRR software is resolving the members of a set which has a <code>src-members</code>
-attribute, the resolver <span class="bcp14">MUST NOT</span> consider the contents of the <code>members</code> or <code>mp-members</code>
-attribute.<a href="#section-2.3-1" class="pilcrow">¶</a></p>
+attribute as part of a query,
+the resolver <span class="bcp14">MUST NOT</span> consider the contents of the <code>members</code> or <code>mp-members</code>
+attribute. This is consistent with <span>[<a href="#RFC2622" class="cite xref">RFC2622</a>]</span> section 10.2.<a href="#section-2.3-1" class="pilcrow">¶</a></p>
 <p id="section-2.3-2">To find the referred set, the resolver <span class="bcp14">MUST</span> match on both the IRR registry
 name and the set's primary key.
 If the IRR registry is unknown to the resolver, no set can match the reference.<a href="#section-2.3-2" class="pilcrow">¶</a></p>
@@ -1522,6 +1523,39 @@ If the IRR registry is unknown to the resolver, no set can match the reference.<
 If references are found to a set, and there are multiple sets
 with this primary key known to the resolver, the behavior is
 not defined by this document.<a href="#section-2.3-3" class="pilcrow">¶</a></p>
+<p id="section-2.3-4">Note that the restriction to a specific IRR registry name is only used
+to select the correct IRR registry to retrieve the referred object and its
+attributes.
+When recursive resolving, if that set has references to further sets,
+those <span class="bcp14">MUST</span> be retrieved from a potentially different registry (either the
+registry specified in the <code>src-members</code> attribute if that attribute is present,
+or the existing source selection algorithm the IRR server currently uses if
+resolving using <code>(mp-)members</code>. In other words, the restriction of the lookup
+to a specific IRR registry does not cascade.<a href="#section-2.3-4" class="pilcrow">¶</a></p>
+<p id="section-2.3-5">Example:<a href="#section-2.3-5" class="pilcrow">¶</a></p>
+<span id="name-objects-for-recursive-looku"></span><figure id="figure-1">
+          <div class="lang-rpsl sourcecode" id="section-2.3-6.1">
+<pre>
+route-set: RS-FIRST
+src-members: RIPE::RS-SECOND
+source: EXAMPLE
+
+route-set: RS-SECOND
+members: RS-THIRD
+source: RIPE
+
+route-set: RS-THIRD
+members: AS65000
+source: OTHER
+</pre>
+</div>
+<figcaption><a href="#figure-1" class="selfRef">Figure 1</a>:
+<a href="#name-objects-for-recursive-looku" class="selfRef">Objects for recursive lookups</a>
+          </figcaption></figure>
+<p id="section-2.3-7">To perform a recursive resolve of RS-FIRST, the IRR software
+looks up RS-FIRST, then looks up RS-SECOND in the RIPE registry,
+then looks for RS-THIRD in any registry enabled for this query.
+If all mentioned registries are enabled, RS-FIRST would resolve to AS64500.<a href="#section-2.3-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1560,9 +1594,14 @@ for older software.<a href="#section-3.1-2" class="pilcrow">¶</a></p>
 <p id="section-3.1-3">IRR registry software is <span class="bcp14">RECOMMENDED</span> to make the <code>src-members</code> attribute
 mandatory on all new as-set/route-set objects, and <span class="bcp14">MAY</span> make it required when modifying
 existing objects.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
-<p id="section-3.1-4">Example of a valid object:<a href="#section-3.1-4" class="pilcrow">¶</a></p>
-<span id="name-valid-object"></span><figure id="figure-1">
-          <div class="lang-rpsl sourcecode" id="section-3.1-5.1">
+<p id="section-3.1-4">This may appear to conflict with the <span><a href="#resolving" class="internal xref">section on resolving</a> (<a href="#resolving" class="auto internal xref">Section 2.3</a>)</span>,
+which says IRR software must not consider <code>(mp-)members</code> when <code>src-members</code>
+is present. However, that section is about resolving a query on IRR data,
+this section is about processing object creation and modification 
+in software that is authoritative for the IRR registry.<a href="#section-3.1-4" class="pilcrow">¶</a></p>
+<p id="section-3.1-5">Example of a valid object:<a href="#section-3.1-5" class="pilcrow">¶</a></p>
+<span id="name-valid-object"></span><figure id="figure-2">
+          <div class="lang-rpsl sourcecode" id="section-3.1-6.1">
 <pre>
 route-set: RS-EXAMPLE
 members: 192.0.2.0/24
@@ -1572,12 +1611,12 @@ src-members: 192.0.2.0/24, RIPE::RS-OTHER, 2001:db8::/32
 source: EXAMPLE
 </pre>
 </div>
-<figcaption><a href="#figure-1" class="selfRef">Figure 1</a>:
+<figcaption><a href="#figure-2" class="selfRef">Figure 2</a>:
 <a href="#name-valid-object" class="selfRef">Valid object</a>
           </figcaption></figure>
-<p id="section-3.1-6">Example of an invalid object:<a href="#section-3.1-6" class="pilcrow">¶</a></p>
-<span id="name-invalid-object-inconsistent"></span><figure id="figure-2">
-          <div class="lang-rpsl sourcecode" id="section-3.1-7.1">
+<p id="section-3.1-7">Example of an invalid object:<a href="#section-3.1-7" class="pilcrow">¶</a></p>
+<span id="name-invalid-object-inconsistent"></span><figure id="figure-3">
+          <div class="lang-rpsl sourcecode" id="section-3.1-8.1">
 <pre>
 route-set: RS-EXAMPLE
 members: 192.0.2.0/24
@@ -1588,7 +1627,7 @@ src-members: NTTCOM::RS-SRCMBRONLY, 2001:db8::/32
 source: EXAMPLE
 </pre>
 </div>
-<figcaption><a href="#figure-2" class="selfRef">Figure 2</a>:
+<figcaption><a href="#figure-3" class="selfRef">Figure 3</a>:
 <a href="#name-invalid-object-inconsistent" class="selfRef">Invalid object: inconsistent inclusion of RS-MPMBRONLY, NTTCOM::RS-SRCMBRONLY, and 200:db8::/36 vs /32</a>
           </figcaption></figure>
 </section>
@@ -1630,27 +1669,27 @@ above <span class="bcp14">MUST</span> still be applied.<a href="#section-3.2-4" 
         <h3 id="name-multiple-references-to-the-">
 <a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-multiple-references-to-the-" class="section-name selfRef">Multiple references to the same primary key</a>
         </h3>
-<p id="section-3.3-1"><em>Note for review: this option is questionable. The risk is that the difference</em>
-          <em>in interpretation between legacy members and new src-members increases.</em><a href="#section-3.3-1" class="pilcrow">¶</a></p>
-<p id="section-3.3-2">Adding a IRR registry scope to each reference allows a new behavior:<a href="#section-3.3-2" class="pilcrow">¶</a></p>
-<span id="name-valid-object-using-multiple"></span><figure id="figure-3">
-          <div class="lang-rpsl sourcecode" id="section-3.3-3.1">
+<p id="section-3.3-1">Adding a IRR registry scope to each reference syntactically allows a new
+behaviour: having multiple references to the same RPSL primary key.
+This is not permitted, and IRR registry software <span class="bcp14">MUST</span> reject this:<a href="#section-3.3-1" class="pilcrow">¶</a></p>
+<span id="name-invalid-object-using-multip"></span><figure id="figure-4">
+          <div class="lang-rpsl sourcecode" id="section-3.3-2.1">
 <pre>
 as-set: AS-EXAMPLE
-members: AS-OTHER
 src-members: RIPE::AS-OTHER, ARIN::AS-OTHER
 source: EXAMPLE
 </pre>
 </div>
-<figcaption><a href="#figure-3" class="selfRef">Figure 3</a>:
-<a href="#name-valid-object-using-multiple" class="selfRef">Valid object using multiple registry prefixes with the same RPSL primary key</a>
+<figcaption><a href="#figure-4" class="selfRef">Figure 4</a>:
+<a href="#name-invalid-object-using-multip" class="selfRef">Invalid object using multiple registry prefixes with the same RPSL primary key</a>
           </figcaption></figure>
-<p id="section-3.3-4">Assuming both RIPE and ARIN have an as-set with primary key <code>AS-OTHER</code>, the
-<span>[<a href="#RFC2622" class="cite xref">RFC2622</a>]</span> interpretation of this <code>members</code> attribute is ambiguous in which
-object is referenced. It is however clear that it refers to one of them.<a href="#section-3.3-4" class="pilcrow">¶</a></p>
-<p id="section-3.3-5">The new option of <code>src-members</code> not only allows defining which single object
-was meant to be referenced, but also allows operators to intentionally include
-multiple objects that have the same primary key in their respective IRR registries.<a href="#section-3.3-5" class="pilcrow">¶</a></p>
+<p id="section-3.3-3">The IRR registry software <span class="bcp14">MUST</span> verify that, without their registry prefix,
+all references from <code>src-members</code> are unique.<a href="#section-3.3-3" class="pilcrow">¶</a></p>
+<p id="section-3.3-4">This avoids ambiguity regarding backwards compatibility with <code>(mp-)members</code>
+described earlier.
+If allowed, the attribute <code>src-members: RIPE::AS-OTHER, ARIN::AS-OTHER</code> would
+refers to two different sets, whereas the translation <code>mp-members: AS-OTHER</code>
+only refers one set.<a href="#section-3.3-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
