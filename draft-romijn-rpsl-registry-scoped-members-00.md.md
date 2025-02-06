@@ -280,28 +280,25 @@ IRR registry software MUST NOT attempt to automatically derive
 
 ## Multiple references to the same primary key
 
-_Note for review\: this option is questionable. The risk is that the difference_
-_in interpretation between legacy members and new src-members increases._
-
-
-Adding a IRR registry scope to each reference allows a new behavior:
+Adding a IRR registry scope to each reference syntactically allows a new
+behaviour\: having multiple references to the same RPSL primary key.
+This is not permitted, and IRR registry software MUST reject this\:
 
 ~~~~ rpsl
 as-set: AS-EXAMPLE
-members: AS-OTHER
 src-members: RIPE::AS-OTHER, ARIN::AS-OTHER
 source: EXAMPLE
 ~~~~
-{: title='Valid object using multiple registry prefixes with the same RPSL primary key'}
+{: title='Invalid object using multiple registry prefixes with the same RPSL primary key'}
 
-Assuming both RIPE and ARIN have an as-set with primary key `AS-OTHER`, the
-{{RFC2622}} interpretation of this `members` attribute is ambiguous in which
-object is referenced. It is however clear that it refers to one of them.
+The IRR registry software MUST verify that, without their registry prefix,
+all references from `src-members` are unique.
 
-The new option of `src-members` not only allows defining which single object
-was meant to be referenced, but also allows operators to intentionally include
-multiple objects that have the same primary key in their respective IRR registries.
-
+This avoids ambiguity regarding backwards compatiblity with `(mp-)members`
+described earlier.
+If allowed, the attribute `src-members: RIPE::AS-OTHER, ARIN::AS-OTHER` would
+refers to two different sets, whereas the translation `mp-members: AS-OTHER`
+only refers one set.
 
 # IANA Considerations {#IANA}
 
