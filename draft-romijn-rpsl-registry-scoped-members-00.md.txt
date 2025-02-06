@@ -4,9 +4,9 @@
 
 Network Working Group                                          S. Romijn
 Internet-Draft                                            Reliably Coded
-Updates: 2622, 4012 (if approved)                        15 January 2025
+Updates: 2622, 4012 (if approved)                        6 February 2025
 Intended status: Informational                                          
-Expires: 19 July 2025
+Expires: 10 August 2025
 
 
               Registry scoped members for RPSL set objects
@@ -36,7 +36,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 19 July 2025.
+   This Internet-Draft will expire on 10 August 2025.
 
 Copyright Notice
 
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Romijn                    Expires 19 July 2025                  [Page 1]
+Romijn                   Expires 10 August 2025                 [Page 1]
 
-Internet-Draft  Registry scoped members for RPSL set obj    January 2025
+Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -100,7 +100,7 @@ Table of Contents
    A set may refer to another set by including the primary key in its
    (mp-)members attribute, which may be in the same, or another IRR
    registry.  It is not possible to specify the IRR registry of the
-   referred set.  This makes it primary key collisions possible when
+   referred set.  This makes primary key collisions possible when
    resolving a set:
 
    1.  There are multiple significant IRR registries.
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Romijn                    Expires 19 July 2025                  [Page 2]
+Romijn                   Expires 10 August 2025                 [Page 2]
 
-Internet-Draft  Registry scoped members for RPSL set obj    January 2025
+Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
 
    2.  Sets often reference objects in registries other than the
@@ -165,9 +165,9 @@ Internet-Draft  Registry scoped members for RPSL set obj    January 2025
 
 
 
-Romijn                    Expires 19 July 2025                  [Page 3]
+Romijn                   Expires 10 August 2025                 [Page 3]
 
-Internet-Draft  Registry scoped members for RPSL set obj    January 2025
+Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
 
    *  [RFC2725] Section 9.6 defines external repository (IRR)
@@ -210,9 +210,9 @@ Internet-Draft  Registry scoped members for RPSL set obj    January 2025
 
 2.2.  route-set class
 
-   The new src-members attribute on as-set is similar to the mp-members
-   attribute from [RFC4012], except that any references to set names
-   MUST be prefixed with a registry name.
+   The new src-members attribute on route-set is similar to the mp-
+   members attribute from [RFC4012], except that any references to set
+   names MUST be prefixed with a registry name.
 
    Attribute:
       src-members
@@ -221,9 +221,9 @@ Internet-Draft  Registry scoped members for RPSL set obj    January 2025
 
 
 
-Romijn                    Expires 19 July 2025                  [Page 4]
+Romijn                   Expires 10 August 2025                 [Page 4]
 
-Internet-Draft  Registry scoped members for RPSL set obj    January 2025
+Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
 
       list of ([ipv4-address-prefix-range] or [ipv6-address-prefix-
@@ -277,9 +277,9 @@ Internet-Draft  Registry scoped members for RPSL set obj    January 2025
 
 
 
-Romijn                    Expires 19 July 2025                  [Page 5]
+Romijn                   Expires 10 August 2025                 [Page 5]
 
-Internet-Draft  Registry scoped members for RPSL set obj    January 2025
+Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
 
 3.1.  Additional validation
@@ -333,9 +333,9 @@ Internet-Draft  Registry scoped members for RPSL set obj    January 2025
 
 
 
-Romijn                    Expires 19 July 2025                  [Page 6]
+Romijn                   Expires 10 August 2025                 [Page 6]
 
-Internet-Draft  Registry scoped members for RPSL set obj    January 2025
+Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
 
    *  It is RECOMMENDED that when processing a route-set object with a
@@ -353,7 +353,7 @@ Internet-Draft  Registry scoped members for RPSL set obj    January 2025
    The registry MAY return an informational message to the user about
    the modifications.  The objects MUST NOT be modified if already
    submitted with any members or mp-members attribute, though the
-   validation rules noted above must still be applied.
+   validation rules noted above MUST still be applied.
 
    IRR registry software MUST NOT attempt to automatically derive src-
    members from (mp-)members, as this can not be done reliably.
@@ -389,9 +389,9 @@ Internet-Draft  Registry scoped members for RPSL set obj    January 2025
 
 
 
-Romijn                    Expires 19 July 2025                  [Page 7]
+Romijn                   Expires 10 August 2025                 [Page 7]
 
-Internet-Draft  Registry scoped members for RPSL set obj    January 2025
+Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
 
 4.  IANA Considerations
@@ -404,9 +404,9 @@ Internet-Draft  Registry scoped members for RPSL set obj    January 2025
    could be manipulated by maliciously creating set objects, which could
    be picked over legitimate objects.
 
-   While not a new issue, references between set objects may be
-   circular, and software must detect such cases while resolving.  It
-   may also choose to limit depth or size of their resolving to avoid
+   While not a new issue, references between set objects can be
+   circular, and software MUST detect such cases while resolving.  It
+   MAY also choose to limit depth or size of their resolving to avoid
    excessive resource use.
 
 6.  Normative References
@@ -445,9 +445,9 @@ Author's Address
 
 
 
-Romijn                    Expires 19 July 2025                  [Page 8]
+Romijn                   Expires 10 August 2025                 [Page 8]
 
-Internet-Draft  Registry scoped members for RPSL set obj    January 2025
+Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
 
    Email: sasha@reliablycoded.nl
@@ -501,4 +501,4 @@ Internet-Draft  Registry scoped members for RPSL set obj    January 2025
 
 
 
-Romijn                    Expires 19 July 2025                  [Page 9]
+Romijn                   Expires 10 August 2025                 [Page 9]
