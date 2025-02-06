@@ -301,7 +301,7 @@ source: EXAMPLE
 The IRR registry software MUST verify that, without their registry prefix,
 all references from `src-members` are unique.
 
-This avoids ambiguity regarding backwards compatiblity with `(mp-)members`
+This avoids ambiguity regarding backwards compatibility with `(mp-)members`
 described earlier.
 If allowed, the attribute `src-members: RIPE::AS-OTHER, ARIN::AS-OTHER` would
 refers to two different sets, whereas the translation `mp-members: AS-OTHER`
