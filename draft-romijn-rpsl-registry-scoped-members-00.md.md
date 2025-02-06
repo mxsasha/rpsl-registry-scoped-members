@@ -282,9 +282,9 @@ This document removes a potential security issue where routing
 policy could be manipulated by maliciously creating set objects,
 which could be picked over legitimate objects.
 
-While not a new issue, references between set objects may be
-circular, and software must detect such cases while resolving.
-It may also choose to limit depth or size of their resolving
+While not a new issue, references between set objects can be
+circular, and software MUST detect such cases while resolving.
+It MAY also choose to limit depth or size of their resolving
 to avoid excessive resource use.
 
 --- back
