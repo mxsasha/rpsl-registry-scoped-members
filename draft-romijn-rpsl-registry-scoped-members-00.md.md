@@ -56,7 +56,7 @@ resolve a set down to its members, a set of prefixes or ASes.
 A set may refer to another set by including the primary key in its
 `(mp-)members` attribute, which may be in the same, or another IRR registry.
 It is not possible to specify the IRR registry of
-the referred set. This makes it primary key collisions possible
+the referred set. This makes primary key collisions possible
 when resolving a set\:
 
 1. There are multiple significant IRR registries.
