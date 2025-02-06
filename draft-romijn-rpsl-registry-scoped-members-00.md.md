@@ -129,7 +129,7 @@ Type:
 
 ## route-set class
 
-The new `src-members` attribute on as-set is similar to the `mp-members` attribute 
+The new `src-members` attribute on route-set is similar to the `mp-members` attribute 
 from {{RFC4012}}, except that any references to set names MUST 
 be prefixed with a registry name.
 
