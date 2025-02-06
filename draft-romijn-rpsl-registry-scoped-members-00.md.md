@@ -149,7 +149,7 @@ Type:
 
 When IRR software is resolving the members of a set which has a `src-members`
 attribute, the resolver MUST NOT consider the contents of the `members` or `mp-members`
-attribute.
+attribute. This is consistent with {{RFC2622}} section 10.2.
 
 To find the referred set, the resolver MUST match on both the IRR registry
 name and the set's primary key.
