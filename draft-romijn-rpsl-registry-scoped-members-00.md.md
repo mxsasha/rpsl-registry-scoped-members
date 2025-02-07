@@ -267,15 +267,16 @@ source: EXAMPLE
 
 Managing multiple copies of the same records is tedious for users.
 Therefore, IRR registry software is RECOMMENDED to automatically
-fill `(mp-)members`, if not specified by the user, based on `src-members`.
+fill `(mp-)members`, if not specified by the user, based on `src-members`,
+in authoritative objects, when the user creates or updates the object.
 
 Specifically, for authoritative IRR registries\:
 
-* It is RECOMMENDED that when processing a route-set object
+* It is RECOMMENDED that when creating/updating a route-set object
   with a `src-members` attribute, but without both a `members` and `mp-members`
   attribute, the software fills the `mp-members` attribute automatically with the contents
   of `src-members`, with IRR registry prefix removed from references.
-* It is RECOMMENDED that when processing an as-set object
+* It is RECOMMENDED that when creating/updating an as-set object
   with a `src-members` attribute, but without a `members`
   attribute, the software fills the `members` attribute automatically with the contents
   of `src-members`, with IRR registry prefix removed from references.
@@ -285,9 +286,11 @@ the modifications.
 The objects MUST NOT be modified if already submitted with any
 `members` or `mp-members` attribute, though the validation rules noted
 above MUST still be applied.
+Non-authoritative servers MUST NOT generate `src-members` automatically.
 
 IRR registry software MUST NOT attempt to automatically derive
 `src-members` from `(mp-)members`, as this can not be done reliably.
+
 
 ## Multiple references to the same primary key
 
