@@ -81,7 +81,8 @@ This has been seen multiple times on the public Internet.
 With either case, routing policy information may end up missing and connectivity
 may be disrupted.
 
-There is no current way to prevent such ambiguity during set member resolution, both for operators who create the legitimate objects and those who try to resolve them.
+There is no current way to prevent such ambiguity during set member resolution,
+both for operators who create the legitimate objects and those who try to resolve them.
 
 Two previous enhancements to reduce set name collisions have been standardized.
 however, the problem persists\:
@@ -98,8 +99,9 @@ however, the problem persists\:
 
 To solve this, this documents adds `src-members` to as-set and route-set objects,
 using a IRR registry name prefix with a double colon.
-For example, "RIPE::AS-EXAMPLE", a format already used by operators informally,
-for example in PeeringDB.
+For example\: "RIPE::AS-EXAMPLE", to refer specifically to an object "AS-EXAMPLE"
+in the IRR "RIPE". This format is already widely used informally by operators,
+including in platforms such as PeeringDB.
 Continued availability of existing `(mp-)members` attributes
 together with new validation rules, ensures backwards compatibility.
 
