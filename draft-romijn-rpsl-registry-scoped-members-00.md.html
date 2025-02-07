@@ -1522,9 +1522,11 @@ name and the set's primary key.
 If the IRR registry is unknown to the resolver, no set can match the reference.<a href="#section-2.3-2" class="pilcrow">¶</a></p>
 <p id="section-2.3-3">When an as-set/route-set does not contain an <code>src-members</code> attribute, the resolver
 <span class="bcp14">SHOULD</span> consider the values of <code>members</code> and <code>mp-members</code>.
+These objects may still be encountered if they were created or updated before
+adoption of <code>src-members</code>, or the objects have not been updated since.
 If references are found to a set, and there are multiple sets
 with this primary key known to the resolver, the behavior is
-not defined by this document.<a href="#section-2.3-3" class="pilcrow">¶</a></p>
+not defined by this document as this was a previously existing problem.<a href="#section-2.3-3" class="pilcrow">¶</a></p>
 <p id="section-2.3-4">Note that the restriction to a specific IRR registry name is only used
 to select the correct IRR registry to retrieve the referred object and its
 attributes.
@@ -1641,17 +1643,18 @@ source: EXAMPLE
         </h3>
 <p id="section-3.2-1">Managing multiple copies of the same records is tedious for users.
 Therefore, IRR registry software is <span class="bcp14">RECOMMENDED</span> to automatically
-fill <code>(mp-)members</code>, if not specified by the user, based on <code>src-members</code>.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
+fill <code>(mp-)members</code>, if not specified by the user, based on <code>src-members</code>,
+in authoritative objects, when the user creates or updates the object.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
 <p id="section-3.2-2">Specifically, for authoritative IRR registries:<a href="#section-3.2-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3.2-3.1">
-            <p id="section-3.2-3.1.1">It is <span class="bcp14">RECOMMENDED</span> that when processing a route-set object
+            <p id="section-3.2-3.1.1">It is <span class="bcp14">RECOMMENDED</span> that when creating/updating a route-set object
 with a <code>src-members</code> attribute, but without both a <code>members</code> and <code>mp-members</code>
 attribute, the software fills the <code>mp-members</code> attribute automatically with the contents
 of <code>src-members</code>, with IRR registry prefix removed from references.<a href="#section-3.2-3.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-3.2-3.2">
-            <p id="section-3.2-3.2.1">It is <span class="bcp14">RECOMMENDED</span> that when processing an as-set object
+            <p id="section-3.2-3.2.1">It is <span class="bcp14">RECOMMENDED</span> that when creating/updating an as-set object
 with a <code>src-members</code> attribute, but without a <code>members</code>
 attribute, the software fills the <code>members</code> attribute automatically with the contents
 of <code>src-members</code>, with IRR registry prefix removed from references.<a href="#section-3.2-3.2.1" class="pilcrow">¶</a></p>
@@ -1661,7 +1664,8 @@ of <code>src-members</code>, with IRR registry prefix removed from references.<a
 the modifications.
 The objects <span class="bcp14">MUST NOT</span> be modified if already submitted with any
 <code>members</code> or <code>mp-members</code> attribute, though the validation rules noted
-above <span class="bcp14">MUST</span> still be applied.<a href="#section-3.2-4" class="pilcrow">¶</a></p>
+above <span class="bcp14">MUST</span> still be applied.
+Non-authoritative servers <span class="bcp14">MUST NOT</span> generate <code>src-members</code> automatically.<a href="#section-3.2-4" class="pilcrow">¶</a></p>
 <p id="section-3.2-5">IRR registry software <span class="bcp14">MUST NOT</span> attempt to automatically derive
 <code>src-members</code> from <code>(mp-)members</code>, as this can not be done reliably.<a href="#section-3.2-5" class="pilcrow">¶</a></p>
 </section>
