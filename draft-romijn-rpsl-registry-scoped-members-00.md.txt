@@ -4,9 +4,9 @@
 
 Network Working Group                                          S. Romijn
 Internet-Draft                                            Reliably Coded
-Updates: 2622, 4012 (if approved)                        6 February 2025
+Updates: 2622, 4012 (if approved)                        7 February 2025
 Intended status: Informational                                          
-Expires: 10 August 2025
+Expires: 11 August 2025
 
 
               Registry scoped members for RPSL set objects
@@ -36,7 +36,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 10 August 2025.
+   This Internet-Draft will expire on 11 August 2025.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Romijn                   Expires 10 August 2025                 [Page 1]
+Romijn                   Expires 11 August 2025                 [Page 1]
 
 Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
@@ -80,8 +80,8 @@ Table of Contents
      3.2.  Automatic generation of (mp-)members  . . . . . . . . . .   7
      3.3.  Multiple references to the same primary key . . . . . . .   8
    4.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   8
-   5.  Security Considerations . . . . . . . . . . . . . . . . . . .   8
-   6.  Normative References  . . . . . . . . . . . . . . . . . . . .   8
+   5.  Security Considerations . . . . . . . . . . . . . . . . . . .   9
+   6.  Normative References  . . . . . . . . . . . . . . . . . . . .   9
    Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   9
 
 1.  Introduction
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Romijn                   Expires 10 August 2025                 [Page 2]
+Romijn                   Expires 11 August 2025                 [Page 2]
 
 Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
@@ -165,7 +165,7 @@ Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
 
 
-Romijn                   Expires 10 August 2025                 [Page 3]
+Romijn                   Expires 11 August 2025                 [Page 3]
 
 Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
@@ -178,10 +178,11 @@ Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
    To solve this, this documents adds src-members to as-set and route-
    set objects, using a IRR registry name prefix with a double colon.
-   For example, "RIPE::AS-EXAMPLE", a format already used by operators
-   informally, for example in PeeringDB.  Continued availability of
-   existing (mp-)members attributes together with new validation rules,
-   ensures backwards compatibility.
+   For example: "RIPE::AS-EXAMPLE", to refer specifically to an object
+   "AS-EXAMPLE" in the IRR "RIPE".  This format is already widely used
+   informally by operators, including in platforms such as PeeringDB.
+   Continued availability of existing (mp-)members attributes together
+   with new validation rules, ensures backwards compatibility.
 
 1.1.  Requirements Language
 
@@ -217,15 +218,15 @@ Internet-Draft  Registry scoped members for RPSL set obj   February 2025
    Attribute:
       src-members
 
-   Value:
 
 
 
-Romijn                   Expires 10 August 2025                 [Page 4]
+Romijn                   Expires 11 August 2025                 [Page 4]
 
 Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
 
+   Value:
       list of ([ipv4-address-prefix-range] or [ipv6-address-prefix-
       range] or [registry-name]::[route-set-name] or [registry-
       name]::[as-set-name] or [as-number] or [registry-name]::[route-
@@ -263,6 +264,24 @@ Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
    Example:
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+Romijn                   Expires 11 August 2025                 [Page 5]
+
+Internet-Draft  Registry scoped members for RPSL set obj   February 2025
+
+
    route-set: RS-FIRST
    src-members: RIPE::RS-SECOND
    source: EXAMPLE
@@ -274,13 +293,6 @@ Internet-Draft  Registry scoped members for RPSL set obj   February 2025
    route-set: RS-THIRD
    members: AS65000
    source: OTHER
-
-
-
-Romijn                   Expires 10 August 2025                 [Page 5]
-
-Internet-Draft  Registry scoped members for RPSL set obj   February 2025
-
 
                   Figure 1: Objects for recursive lookups
 
@@ -316,6 +328,16 @@ Internet-Draft  Registry scoped members for RPSL set obj   February 2025
    combined, regardless if they were listed in one attribute, or in
    multiple repetitions of the attribute.
 
+
+
+
+
+
+Romijn                   Expires 11 August 2025                 [Page 6]
+
+Internet-Draft  Registry scoped members for RPSL set obj   February 2025
+
+
    This ensures that the new src-members can be used, providing the
    benefits for updated software, while still having a consistent
    (mp-)members available for older software.
@@ -330,13 +352,6 @@ Internet-Draft  Registry scoped members for RPSL set obj   February 2025
    resolving a query on IRR data, this section is about processing
    object creation and modification in software that is authoritative
    for the IRR registry.
-
-
-
-Romijn                   Expires 10 August 2025                 [Page 6]
-
-Internet-Draft  Registry scoped members for RPSL set obj   February 2025
-
 
    Example of a valid object:
 
@@ -370,6 +385,15 @@ Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
    Specifically, for authoritative IRR registries:
 
+
+
+
+
+Romijn                   Expires 11 August 2025                 [Page 7]
+
+Internet-Draft  Registry scoped members for RPSL set obj   February 2025
+
+
    *  It is RECOMMENDED that when processing a route-set object with a
       src-members attribute, but without both a members and mp-members
       attribute, the software fills the mp-members attribute
@@ -387,20 +411,13 @@ Internet-Draft  Registry scoped members for RPSL set obj   February 2025
    submitted with any members or mp-members attribute, though the
    validation rules noted above MUST still be applied.
 
-
-
-Romijn                   Expires 10 August 2025                 [Page 7]
-
-Internet-Draft  Registry scoped members for RPSL set obj   February 2025
-
-
    IRR registry software MUST NOT attempt to automatically derive src-
    members from (mp-)members, as this can not be done reliably.
 
 3.3.  Multiple references to the same primary key
 
    Adding a IRR registry scope to each reference syntactically allows a
-   new behaviour: having multiple references to the same RPSL primary
+   new behavior: having multiple references to the same RPSL primary
    key.  This is not permitted, and IRR registry software MUST reject
    this:
 
@@ -424,6 +441,15 @@ Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
    This memo includes no request to IANA.
 
+
+
+
+
+Romijn                   Expires 11 August 2025                 [Page 8]
+
+Internet-Draft  Registry scoped members for RPSL set obj   February 2025
+
+
 5.  Security Considerations
 
    This document removes a potential security issue where routing policy
@@ -442,13 +468,6 @@ Internet-Draft  Registry scoped members for RPSL set obj   February 2025
               "Routing Policy Specification Language (RPSL)", RFC 2622,
               DOI 10.17487/RFC2622, June 1999,
               <https://www.rfc-editor.org/rfc/rfc2622>.
-
-
-
-Romijn                   Expires 10 August 2025                 [Page 8]
-
-Internet-Draft  Registry scoped members for RPSL set obj   February 2025
-
 
    [RFC2725]  Villamizar, C., Alaettinoglu, C., Meyer, D., and S.
               Murphy, "Routing Policy System Security", RFC 2725,
@@ -482,23 +501,4 @@ Author's Address
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Romijn                   Expires 10 August 2025                 [Page 9]
+Romijn                   Expires 11 August 2025                 [Page 9]
