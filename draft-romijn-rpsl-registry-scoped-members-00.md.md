@@ -160,9 +160,11 @@ If the IRR registry is unknown to the resolver, no set can match the reference.
 
 When an as-set/route-set does not contain an `src-members` attribute, the resolver
 SHOULD consider the values of `members` and `mp-members`.
+These objects may still be encountered if they were created or updated before
+adoption of `src-members`, or the objects have not been updated since.
 If references are found to a set, and there are multiple sets
 with this primary key known to the resolver, the behavior is
-not defined by this document.
+not defined by this document as this was a previously existing problem.
 
 Note that the restriction to a specific IRR registry name is only used
 to select the correct IRR registry to retrieve the referred object and its
