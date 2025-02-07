@@ -290,7 +290,7 @@ IRR registry software MUST NOT attempt to automatically derive
 ## Multiple references to the same primary key
 
 Adding a IRR registry scope to each reference syntactically allows a new
-behaviour\: having multiple references to the same RPSL primary key.
+behavior\: having multiple references to the same RPSL primary key.
 This is not permitted, and IRR registry software MUST reject this\:
 
 ~~~~ rpsl
