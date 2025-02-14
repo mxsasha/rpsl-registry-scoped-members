@@ -322,7 +322,7 @@ all references from `src-members` are unique.
 This avoids ambiguity regarding backwards compatibility with `(mp-)members`
 described earlier.
 If allowed, the attribute `src-members: RIPE::AS-OTHER, ARIN::AS-OTHER` would
-refers to two different sets, whereas the translation `mp-members: AS-OTHER`
+refer to two different sets, whereas the translation `mp-members: AS-OTHER`
 only refers one set.
 
 # IANA Considerations {#IANA}
