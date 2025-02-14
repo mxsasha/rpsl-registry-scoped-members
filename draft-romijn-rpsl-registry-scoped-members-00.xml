@@ -53,7 +53,7 @@
 <t>This document updates <xref target="RFC2622"/> and <xref target="RFC4012"/> by specifying <spanx style="verb">src-members</spanx>,
 a new attribute on as-set and route-set
 objects in the Routing Policy Specification Language (RPSL).
-This attribute allows a specific registry to be specified for each member
+This attribute allows a specific registry to be defined for each member
 in a set, avoiding problematic ambiguity when resolving set members.
 A new validation rule allows gradual upgrades and backwards compatibility.</t>
 
@@ -78,24 +78,26 @@ These are among the most common objects in the Internet Routing Registry (IRR) s
 These sets can either reference a direct member of the set
 (such as an AS number, IP prefix, etc.), or additional sets which themselves have
 their own direct members and/or reference yet more sets, ad infinitum.
-In both cases, this referencing uses the members and mp-members
+In both cases, this referencing uses the <spanx style="verb">members</spanx> and <spanx style="verb">mp-members</spanx>
 attributes <xref target="RFC4012"/>.
 Server and client software can follow these references to 
 resolve a set down to its members, a set of prefixes or ASes.</t>
 
 <t>A set may refer to another set by including the primary key in its
-<spanx style="verb">(mp-)members</spanx> attribute, which may be in the same, or another IRR registry.
+<spanx style="verb">(mp-)members</spanx> attribute.
+The referred set may be in the same or in another IRR registry.
 It is not possible to specify the IRR registry of
-the referred set. This makes primary key collisions possible
+the referred set. This can lead to primary key collisions
 when resolving a set:</t>
 
 <t><list style="numbers" type="1">
   <t>There are multiple significant IRR registries.</t>
   <t>Sets often reference objects in registries other than the registry the set itself is stored in.</t>
   <t>There is no guaranteed uniqueness of object primary keys amongst the different registries.</t>
-  <t>Hence, multiple objects may exist in the IRR system with the same name, making references to them ambiguous.</t>
-  <t>Many IRR servers will mirror data from multiple IRRs, meaning that even within
-a single server, there are usually collisions.</t>
+  <t>Hence, multiple objects may exist in the IRR system with the same primary key, 
+making references to them ambiguous.</t>
+  <t>Many IRR servers will mirror data from multiple IRR registries,
+meaning that even within a single server, there are usually collisions.</t>
 </list></t>
 
 <t>The ambiguity encountered when resolving set members can result in either an
@@ -107,7 +109,7 @@ the correct IRR registry.
 
 <t>Including members from the incorrect RPSL object can result in the computation of
 unintentional routing policy information, which is then deployed to network infrastructure.
-That could cause route leaking, or worst, aid in route hijacking.
+That could cause route leaking, or worse, aid in route hijacking.
 This has been seen multiple times on the public Internet.</t>
 
 <t>If intended policies are not included, because the object was not found,
@@ -131,13 +133,13 @@ local to the IRR registry storing the referring set.</t>
   <t><xref target="RFC2725"/> Section 9.6 defines external repository (IRR) references.
 This allows for the correct IRR registry to be specified for a set member object
 by using the SOURCE:: notation however, this syntax isn't supported in the members
-filed of set objects.</t>
+field of set objects.</t>
 </list></t>
 
-<t>To solve this, this documents adds <spanx style="verb">src-members</spanx> to as-set and route-set objects,
+<t>To solve this, this document adds <spanx style="verb">src-members</spanx> to as-set and route-set objects,
 using a IRR registry name prefix with a double colon.
 For example: "RIPE::AS-EXAMPLE", to refer specifically to an object "AS-EXAMPLE"
-in the IRR "RIPE". This format is already widely used informally by operators,
+in the IRR registry "RIPE". This format is already widely used informally by operators,
 including in platforms such as PeeringDB.
 Continued availability of existing <spanx style="verb">(mp-)members</spanx> attributes
 together with new validation rules, ensures backwards compatibility.</t>
@@ -159,7 +161,8 @@ appear in all capitals, as shown here.</t>
 <section anchor="as-set-class"><name>as-set class</name>
 
 <t>The new <spanx style="verb">src-members</spanx> attribute on as-set is similar to the <spanx style="verb">members</spanx> attribute
-from <xref target="RFC2622"/>, except that the AS set name <bcp14>MUST</bcp14> be prefixed with a registry name.</t>
+from <xref target="RFC2622"/>, except that the AS set name <bcp14>MUST</bcp14> be prefixed with a registry name
+and a double colon.</t>
 
 <dl newline="true">
   <dt>Attribute:</dt>
@@ -181,7 +184,7 @@ from <xref target="RFC2622"/>, except that the AS set name <bcp14>MUST</bcp14> b
 
 <t>The new <spanx style="verb">src-members</spanx> attribute on route-set is similar to the <spanx style="verb">mp-members</spanx> attribute 
 from <xref target="RFC4012"/>, except that any references to set names <bcp14>MUST</bcp14> 
-be prefixed with a registry name.</t>
+be prefixed with a registry name and a double colon.</t>
 
 <dl newline="true">
   <dt>Attribute:</dt>
@@ -201,8 +204,8 @@ be prefixed with a registry name.</t>
 </section>
 <section anchor="resolving"><name>Resolving members through <spanx style="verb">src-members</spanx></name>
 
-<t>When IRR software is resolving the members of a set which has a <spanx style="verb">src-members</spanx>
-attribute as part of a query,
+<t>When IRR software processes a query, and is resolving the members of a set which
+has a <spanx style="verb">src-members</spanx> attribute,
 the resolver <bcp14>MUST NOT</bcp14> consider the contents of the <spanx style="verb">members</spanx> or <spanx style="verb">mp-members</spanx>
 attribute. This is consistent with <xref target="RFC2622"/> section 10.2.</t>
 
@@ -212,7 +215,7 @@ If the IRR registry is unknown to the resolver, no set can match the reference.<
 
 <t>When an as-set/route-set does not contain an <spanx style="verb">src-members</spanx> attribute, the resolver
 <bcp14>SHOULD</bcp14> consider the values of <spanx style="verb">members</spanx> and <spanx style="verb">mp-members</spanx>.
-These objects may still be encountered if they were created or updated before
+These objects may be encountered if they were created or updated before
 adoption of <spanx style="verb">src-members</spanx>, or the objects have not been updated since.
 If references are found to a set, and there are multiple sets
 with this primary key known to the resolver, the behavior is
@@ -221,7 +224,7 @@ not defined by this document as this was a previously existing problem.</t>
 <t>Note that the restriction to a specific IRR registry name is only used
 to select the correct IRR registry to retrieve the referred object and its
 attributes.
-When recursive resolving, if that set has references to further sets,
+During recursive resolving, if that set has references to further sets,
 those <bcp14>MUST</bcp14> be retrieved from a potentially different registry (either the
 registry specified in the <spanx style="verb">src-members</spanx> attribute if that attribute is present,
 or the existing source selection algorithm the IRR server currently uses if
@@ -255,37 +258,37 @@ If all mentioned registries are enabled, RS-FIRST would resolve to AS64500.</t>
 
 <t>Existing IRR software will not be aware of the new <spanx style="verb">src-members</spanx> attribute
 and instead refer to <spanx style="verb">(mp-)members</spanx>.
-This is also why the existing attributes can not be modified - this software
-would consider e.g. <spanx style="verb">RIPE::AS-EXAMPLE</spanx> as the full primary key, and fail
+This is also why the existing attributes are not modified - this existing software
+would consider e.g. <spanx style="verb">RIPE::AS-EXAMPLE</spanx> as the full primary key of a set, and fail
 to look up the reference as intended.</t>
 
 <t>Existing IRR objects may also not be updated with <spanx style="verb">src-members</spanx> for some time,
-as this can not be done automatically.
+as this cannot be done automatically.
 Deployment in both software and objects will be a gradual process, however,
 even partial deployment will reduce the potential for issues from reference
 mixups.</t>
 
 <t>In order to keep support for existing IRR software, the contents of
 <spanx style="verb">src-members</spanx> must match <spanx style="verb">(mp-)members</spanx> as close as possible,
-which the IRR server can ensure.</t>
+which the IRR server will ensure.</t>
 
-<section anchor="additional-validation"><name>Additional validation</name>
+<section anchor="validation"><name>Additional validation</name>
 
 <t>When an authoritative IRR registry processes a set object with a <spanx style="verb">src-members</spanx>
-attribute, it <bcp14>MUST</bcp14> ensure that the union of values in <spanx style="verb">members</spanx> and <spanx style="verb">mp-members</spanx>
+attribute, it <bcp14>MUST</bcp14> validate that the union of values in <spanx style="verb">members</spanx> and <spanx style="verb">mp-members</spanx>
 is equal to the values of <spanx style="verb">src-members</spanx> with the registry names removed from set
 references. All values <bcp14>MUST</bcp14> be combined, regardless if they were listed in
 one attribute, or in multiple repetitions of the attribute.</t>
 
 <t>This ensures that the new <spanx style="verb">src-members</spanx> can be used, providing the benefits
-for updated software, while still having a consistent <spanx style="verb">(mp-)members</spanx> available
+for updated resolver software, while still having a consistent <spanx style="verb">(mp-)members</spanx> available
 for older software.</t>
 
 <t>IRR registry software is <bcp14>RECOMMENDED</bcp14> to make the <spanx style="verb">src-members</spanx> attribute
 mandatory on all new as-set/route-set objects, and <bcp14>MAY</bcp14> make it required when modifying
 existing objects.</t>
 
-<t>This may appear to conflict with the <xref target="resolving">section on resolving</xref>,
+<t>For clarity, this may appear to conflict with the <xref target="resolving">section on resolving</xref>,
 which says IRR software must not consider <spanx style="verb">(mp-)members</spanx> when <spanx style="verb">src-members</spanx>
 is present. However, that section is about resolving a query on IRR data,
 this section is about processing object creation and modification 
@@ -338,12 +341,13 @@ of <spanx style="verb">src-members</spanx>, with the IRR registry prefix removed
 <t>The registry <bcp14>MAY</bcp14> return an informational message to the user about
 the modifications.
 The objects <bcp14>MUST NOT</bcp14> be modified if already submitted with any
-<spanx style="verb">members</spanx> or <spanx style="verb">mp-members</spanx> attribute, though the validation rules noted
-above <bcp14>MUST</bcp14> still be applied.
-Non-authoritative servers <bcp14>MUST NOT</bcp14> generate <spanx style="verb">src-members</spanx> automatically.</t>
+<spanx style="verb">members</spanx> or <spanx style="verb">mp-members</spanx> attribute, though the <xref target="validation">validation rules noted
+earlier</xref> <bcp14>MUST</bcp14> still be applied.
+Non-authoritative servers <bcp14>MUST NOT</bcp14> generate <spanx style="verb">members</spanx> or <spanx style="verb">mp-members</spanx>
+automatically.</t>
 
 <t>IRR registry software <bcp14>MUST NOT</bcp14> attempt to automatically derive
-<spanx style="verb">src-members</spanx> from <spanx style="verb">(mp-)members</spanx>, as this can not be done reliably.</t>
+<spanx style="verb">src-members</spanx> from <spanx style="verb">(mp-)members</spanx>, as this cannot be done reliably.</t>
 
 </section>
 <section anchor="multiple-references-to-the-same-primary-key"><name>Multiple references to the same primary key</name>
@@ -361,11 +365,11 @@ source: EXAMPLE
 <t>The IRR registry software <bcp14>MUST</bcp14> verify that, without their registry prefix,
 all references from <spanx style="verb">src-members</spanx> are unique.</t>
 
-<t>This avoids ambiguity regarding backwards compatibility with <spanx style="verb">(mp-)members</spanx>
+<t>This reduces ambiguity regarding backwards compatibility with <spanx style="verb">(mp-)members</spanx>
 described earlier.
 If allowed, the attribute <spanx style="verb">src-members: RIPE::AS-OTHER, ARIN::AS-OTHER</spanx> would
 refer to two different sets, whereas the translation <spanx style="verb">mp-members: AS-OTHER</spanx>
-only refers one set.</t>
+only refers to one set.</t>
 
 </section>
 </section>
@@ -378,12 +382,12 @@ only refers one set.</t>
 
 <t>This document removes a potential security issue where routing
 policy could be manipulated by maliciously creating set objects,
-which could be picked over legitimate objects.</t>
+which could be used in favor of legitimate objects.</t>
 
 <t>While not a new issue, references between set objects can be
 circular, and software <bcp14>MUST</bcp14> detect such cases while resolving.
-It <bcp14>MAY</bcp14> also choose to limit depth or size of their resolving
-to avoid excessive resource use.</t>
+It is <bcp14>RECOMMENDED</bcp14> to also limit the depth or size of their resolving
+to prevent excessive resource use.</t>
 
 </section>
 
@@ -485,117 +489,118 @@ to avoid excessive resource use.</t>
   </back>
 
 <!-- ##markdown-source:
-H4sIAAAAAAAAA8Vb63IbR3b+30/RoX5Y2gJgkitrbdRmdyGJjrglUgoh78Zl
-u8LGTINocS7w9AwgWqU8S54lT5bvnL5Mz/CyUqqSuMoS0OjLuZ/vnG5Np1Nh
-W1Xl/66KutJz2TadFmbb8CfbHh8efnd4LDLVzqWp1rWw3ao01pq6am+2mH96
-8u57oRqt5lLsr+ZC5HVWqRK/5I1at9OmLs37atpsbTFt9JWxbXMztVm91fm0
-1OVKN3Z6eCi6ba5abefy+Nnx8UQ+PTw6FqI1bYGNLvwy6ZZJv0yu60ZevF2+
-lla3sl6911lrhVqtGr37wkWFqq7mUlfiej8XUk4lkStU127qZi6m4ByULWfy
-gpnBDMfhUtmN6gfr5orOLYxaFTfyRZ3rHKOZaW/mclHaVje5Kmmk7ipQNpfn
-r/FNl8oUc2lpr780fnVGi2dVEc7+60w+15Ut9E08/K/40yajfPpphVNmhamu
-5b+Uq1cYhgy0hvKe1x826kpXupHLtpnJbw+Zkhw7HR0eP/0mUvpcN1ifkvny
-pCfzPZ36FxOPEUJUdVOq1uw0ie7i+xekwfDxD8ff+I+k0bkgE4qzxXQ6lWoF
-ClXWCvFuY6yE9XSlrlrpDUJ+/Oi3/PRJwkzdd9oM31fQ7lZnZn1jqit5aZss
-mNTlRChZ6b1UbduYVddqWVdS2SlpnbZpaozRN+FtAHKW7UZDm11Lu72tC5Pd
-yCXvb2D/sHj5GnbSQYryMZnQk5mjuT9DFUW9x4Any2QymLxsa7nSYRz2SHao
-VbbxhgnJ0DLdTqTa1SYnErZNvSo0SSuTqlyZqw4KkvuNrrCtrYsdTSKGPNMz
-sWCed6owuSO46YpI1VWj8k4VkCx9gmhJDiuVXe9Vk1uou9xi0coUOGXmlFOa
-PC+0EI/IsJo67zLalVT1ZYIaaDHXa1PheEhb3KWR4JUTqT+0uoIjkG4SvZPY
-tQVfDf4va9BAiitr2xITGJAjnbJXVNg50ByDw+PTi4sn0t7AOcuwLUiANFQl
-tcHiBrJe60ZXGQ6TuWmwsRe4rNe8PVnRY9tBl4qEKhdLWXU0YSJP30KL4PcD
-mGmz2ZMJ3FSqPDckJeiCz9pvDNZip9LqYgfJbNROC3w3OGJfDQ9ltX1dp2Td
-kAnUjaMc9kPygohN24Gn00qu6nYDhqzGjy0ZbFhKouisU0W6vSy3wZFENG47
-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
-/L+5IFsX/w3zUPQLlzUAAA==
+H4sIAAAAAAAAA8Vb63Ict5X+j6fA0j8spWZGJCMr9lQ2CXXxiimR0nLkZF22
+a4npxnAg9XSPG92kaJf2WfIsebL9zjkAGj28WNqq1KYq8gwGl3M/3zkAp9Op
+8p2py/82VVPbue7a3iq3bfmT7w7397/ZP1SF6eba1atG+X65cd67pu6ut5h/
+/OLtt8q01sy1urqYK1U2RW02+KVszaqbts3Gvaun7dZX09ZeON+111NfNFtb
+Tjd2s7Stn+7vq35bms76uT58cng40Y/3Dw6V6lxXYaOzsEzLMh2W6VXT6rM3
+i1fa2043y3e26Lwyy2VrLz9zUWXqi7m2tXp/NVdaTzWRq0zfrZt2rqbgHJQt
+ZvqMmcEM4XBh/NoMg017QedWziyra/2sKW2J0cJ113N9tPGdbUuzoZGmr0HZ
+XJ++wje7Ma6aa097/aUNqwtaPKurePZfZ/qprX1lr9Phf8W/Phvl049rnDKr
+XP1e/8dm+RLDkIG1UN7T5sPaXNjatnrRtTP99T5TUmKng/3Dx18lSp/aFutz
+Mp+/GMh8R6f+xaVjlFJ1025M5y4tie7s22ekwfjxD4dfhY+k0bkiE0qz1XQ6
+1WYJCk3RKfV27byG9fQbW3c6GIT+9dew5cePGmYq32kzfF9Cu1tbuNW1qy/0
+uW+LaFLnE2V0ba+06brWLfvO6qbWxk9J67RN22CMvqlgA5Cz7tYW2uw72u1N
+U7niWi94fwf7h8XrV7CTHlLUD8iEHs6E5uEMU1XNFQYCWa7Q0eR11+il1aVd
+uRrWSFZoTbEOZgm50CLbTbS5bFxJBGzbZllZklWhzWbpLnqoR1+tbY1NfVNd
+0iRiJ7A8U0fM8aWpXCnktn2VaLpoTdmbCnKlTxAsSWFpivdXpi09lL3ZYtHS
+VThlJqrZuLKsrFJfkFm1TdkXtCsp6vPENNKhSMCTrNVt+og+OdH2Q2druAFp
+JtM6Cd168NXi/5sGNJDaNo3viAkM6B2Nsk/U2DnSnELDg+Ozs4faX8M1N3Fb
+kABpmFpbh8UtZL2yra0LHKZL12LjIHDdrHh7sqEHvocuDQlVHy103dOEiT5+
+Ay2C3w9gpitmDydwUm3K0pGUoAs+62rtsBY7bbytLiGZtbm0Ct8djriqx4ey
+2h41OVnXZAJNK5TDfkheELHrevB0XOtl063BkLf4sSNzjUtJFL0XVejz6Dis
+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
+CSH2CUs2AAA=
 
 -->
 

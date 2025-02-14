@@ -11,7 +11,7 @@
        This document updates   and   by specifying  src-members ,
 a new attribute on as-set and route-set
 objects in the Routing Policy Specification Language (RPSL).
-This attribute allows a specific registry to be specified for each member
+This attribute allows a specific registry to be defined for each member
 in a set, avoiding problematic ambiguity when resolving set members.
 A new validation rule allows gradual upgrades and backwards compatibility. 
     " name="description">
@@ -1262,7 +1262,7 @@ li > p:last-of-type:only-child {
 <p id="section-abstract-1">This document updates <span>[<a href="#RFC2622" class="cite xref">RFC2622</a>]</span> and <span>[<a href="#RFC4012" class="cite xref">RFC4012</a>]</span> by specifying <code>src-members</code>,
 a new attribute on as-set and route-set
 objects in the Routing Policy Specification Language (RPSL).
-This attribute allows a specific registry to be specified for each member
+This attribute allows a specific registry to be defined for each member
 in a set, avoiding problematic ambiguity when resolving set members.
 A new validation rule allows gradual upgrades and backwards compatibility.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
@@ -1377,14 +1377,15 @@ These are among the most common objects in the Internet Routing Registry (IRR) s
 These sets can either reference a direct member of the set
 (such as an AS number, IP prefix, etc.), or additional sets which themselves have
 their own direct members and/or reference yet more sets, ad infinitum.
-In both cases, this referencing uses the members and mp-members
+In both cases, this referencing uses the <code>members</code> and <code>mp-members</code>
 attributes <span>[<a href="#RFC4012" class="cite xref">RFC4012</a>]</span>.
 Server and client software can follow these references to 
 resolve a set down to its members, a set of prefixes or ASes.<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">A set may refer to another set by including the primary key in its
-<code>(mp-)members</code> attribute, which may be in the same, or another IRR registry.
+<code>(mp-)members</code> attribute.
+The referred set may be in the same or in another IRR registry.
 It is not possible to specify the IRR registry of
-the referred set. This makes primary key collisions possible
+the referred set. This can lead to primary key collisions
 when resolving a set:<a href="#section-1-2" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-1-3">
 <li id="section-1-3.1">
@@ -1397,11 +1398,12 @@ when resolving a set:<a href="#section-1-2" class="pilcrow">¶</a></p>
           <p id="section-1-3.3.1">There is no guaranteed uniqueness of object primary keys amongst the different registries.<a href="#section-1-3.3.1" class="pilcrow">¶</a></p>
 </li>
         <li id="section-1-3.4">
-          <p id="section-1-3.4.1">Hence, multiple objects may exist in the IRR system with the same name, making references to them ambiguous.<a href="#section-1-3.4.1" class="pilcrow">¶</a></p>
+          <p id="section-1-3.4.1">Hence, multiple objects may exist in the IRR system with the same primary key, 
+making references to them ambiguous.<a href="#section-1-3.4.1" class="pilcrow">¶</a></p>
 </li>
         <li id="section-1-3.5">
-          <p id="section-1-3.5.1">Many IRR servers will mirror data from multiple IRRs, meaning that even within
-a single server, there are usually collisions.<a href="#section-1-3.5.1" class="pilcrow">¶</a></p>
+          <p id="section-1-3.5.1">Many IRR servers will mirror data from multiple IRR registries,
+meaning that even within a single server, there are usually collisions.<a href="#section-1-3.5.1" class="pilcrow">¶</a></p>
 </li>
       </ol>
 <p id="section-1-4">The ambiguity encountered when resolving set members can result in either an
@@ -1412,7 +1414,7 @@ the correct IRR registry.
 "Incorrect" and "wrong" in this context meaning: not as intended or expected by the operator.<a href="#section-1-4" class="pilcrow">¶</a></p>
 <p id="section-1-5">Including members from the incorrect RPSL object can result in the computation of
 unintentional routing policy information, which is then deployed to network infrastructure.
-That could cause route leaking, or worst, aid in route hijacking.
+That could cause route leaking, or worse, aid in route hijacking.
 This has been seen multiple times on the public Internet.<a href="#section-1-5" class="pilcrow">¶</a></p>
 <p id="section-1-6">If intended policies are not included, because the object was not found,
 prefixes that should be accepted, are not, and the prefixes are not reachable.<a href="#section-1-6" class="pilcrow">¶</a></p>
@@ -1434,13 +1436,13 @@ local to the IRR registry storing the referring set.<a href="#section-1-10.1.1" 
           <p id="section-1-10.2.1"><span>[<a href="#RFC2725" class="cite xref">RFC2725</a>]</span> Section 9.6 defines external repository (IRR) references.
 This allows for the correct IRR registry to be specified for a set member object
 by using the SOURCE:: notation however, this syntax isn't supported in the members
-filed of set objects.<a href="#section-1-10.2.1" class="pilcrow">¶</a></p>
+field of set objects.<a href="#section-1-10.2.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="section-1-11">To solve this, this documents adds <code>src-members</code> to as-set and route-set objects,
+<p id="section-1-11">To solve this, this document adds <code>src-members</code> to as-set and route-set objects,
 using a IRR registry name prefix with a double colon.
 For example: "RIPE::AS-EXAMPLE", to refer specifically to an object "AS-EXAMPLE"
-in the IRR "RIPE". This format is already widely used informally by operators,
+in the IRR registry "RIPE". This format is already widely used informally by operators,
 including in platforms such as PeeringDB.
 Continued availability of existing <code>(mp-)members</code> attributes
 together with new validation rules, ensures backwards compatibility.<a href="#section-1-11" class="pilcrow">¶</a></p>
@@ -1468,7 +1470,8 @@ appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">�
 <a href="#section-2.1" class="section-number selfRef">2.1. </a><a href="#name-as-set-class" class="section-name selfRef">as-set class</a>
         </h3>
 <p id="section-2.1-1">The new <code>src-members</code> attribute on as-set is similar to the <code>members</code> attribute
-from <span>[<a href="#RFC2622" class="cite xref">RFC2622</a>]</span>, except that the AS set name <span class="bcp14">MUST</span> be prefixed with a registry name.<a href="#section-2.1-1" class="pilcrow">¶</a></p>
+from <span>[<a href="#RFC2622" class="cite xref">RFC2622</a>]</span>, except that the AS set name <span class="bcp14">MUST</span> be prefixed with a registry name
+and a double colon.<a href="#section-2.1-1" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlNewline" id="section-2.1-2">
           <dt id="section-2.1-2.1">Attribute:</dt>
           <dd style="margin-left: 1.5em" id="section-2.1-2.2">
@@ -1495,7 +1498,7 @@ from <span>[<a href="#RFC2622" class="cite xref">RFC2622</a>]</span>, except tha
         </h3>
 <p id="section-2.2-1">The new <code>src-members</code> attribute on route-set is similar to the <code>mp-members</code> attribute 
 from <span>[<a href="#RFC4012" class="cite xref">RFC4012</a>]</span>, except that any references to set names <span class="bcp14">MUST</span> 
-be prefixed with a registry name.<a href="#section-2.2-1" class="pilcrow">¶</a></p>
+be prefixed with a registry name and a double colon.<a href="#section-2.2-1" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlNewline" id="section-2.2-2">
           <dt id="section-2.2-2.1">Attribute:</dt>
           <dd style="margin-left: 1.5em" id="section-2.2-2.2">
@@ -1520,8 +1523,8 @@ be prefixed with a registry name.<a href="#section-2.2-1" class="pilcrow">¶</a>
         <h3 id="name-resolving-members-through-s">
 <a href="#section-2.3" class="section-number selfRef">2.3. </a><a href="#name-resolving-members-through-s" class="section-name selfRef">Resolving members through <code>src-members</code></a>
         </h3>
-<p id="section-2.3-1">When IRR software is resolving the members of a set which has a <code>src-members</code>
-attribute as part of a query,
+<p id="section-2.3-1">When IRR software processes a query, and is resolving the members of a set which
+has a <code>src-members</code> attribute,
 the resolver <span class="bcp14">MUST NOT</span> consider the contents of the <code>members</code> or <code>mp-members</code>
 attribute. This is consistent with <span>[<a href="#RFC2622" class="cite xref">RFC2622</a>]</span> section 10.2.<a href="#section-2.3-1" class="pilcrow">¶</a></p>
 <p id="section-2.3-2">To find the referred set, the resolver <span class="bcp14">MUST</span> match on both the IRR registry
@@ -1529,7 +1532,7 @@ name and the set's primary key.
 If the IRR registry is unknown to the resolver, no set can match the reference.<a href="#section-2.3-2" class="pilcrow">¶</a></p>
 <p id="section-2.3-3">When an as-set/route-set does not contain an <code>src-members</code> attribute, the resolver
 <span class="bcp14">SHOULD</span> consider the values of <code>members</code> and <code>mp-members</code>.
-These objects may still be encountered if they were created or updated before
+These objects may be encountered if they were created or updated before
 adoption of <code>src-members</code>, or the objects have not been updated since.
 If references are found to a set, and there are multiple sets
 with this primary key known to the resolver, the behavior is
@@ -1537,7 +1540,7 @@ not defined by this document as this was a previously existing problem.<a href="
 <p id="section-2.3-4">Note that the restriction to a specific IRR registry name is only used
 to select the correct IRR registry to retrieve the referred object and its
 attributes.
-When recursive resolving, if that set has references to further sets,
+During recursive resolving, if that set has references to further sets,
 those <span class="bcp14">MUST</span> be retrieved from a potentially different registry (either the
 registry specified in the <code>src-members</code> attribute if that attribute is present,
 or the existing source selection algorithm the IRR server currently uses if
@@ -1578,34 +1581,34 @@ If all mentioned registries are enabled, RS-FIRST would resolve to AS64500.<a hr
       </h2>
 <p id="section-3-1">Existing IRR software will not be aware of the new <code>src-members</code> attribute
 and instead refer to <code>(mp-)members</code>.
-This is also why the existing attributes can not be modified - this software
-would consider e.g. <code>RIPE::AS-EXAMPLE</code> as the full primary key, and fail
+This is also why the existing attributes are not modified - this existing software
+would consider e.g. <code>RIPE::AS-EXAMPLE</code> as the full primary key of a set, and fail
 to look up the reference as intended.<a href="#section-3-1" class="pilcrow">¶</a></p>
 <p id="section-3-2">Existing IRR objects may also not be updated with <code>src-members</code> for some time,
-as this can not be done automatically.
+as this cannot be done automatically.
 Deployment in both software and objects will be a gradual process, however,
 even partial deployment will reduce the potential for issues from reference
 mixups.<a href="#section-3-2" class="pilcrow">¶</a></p>
 <p id="section-3-3">In order to keep support for existing IRR software, the contents of
 <code>src-members</code> must match <code>(mp-)members</code> as close as possible,
-which the IRR server can ensure.<a href="#section-3-3" class="pilcrow">¶</a></p>
-<div id="additional-validation">
+which the IRR server will ensure.<a href="#section-3-3" class="pilcrow">¶</a></p>
+<div id="validation">
 <section id="section-3.1">
         <h3 id="name-additional-validation">
 <a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-additional-validation" class="section-name selfRef">Additional validation</a>
         </h3>
 <p id="section-3.1-1">When an authoritative IRR registry processes a set object with a <code>src-members</code>
-attribute, it <span class="bcp14">MUST</span> ensure that the union of values in <code>members</code> and <code>mp-members</code>
+attribute, it <span class="bcp14">MUST</span> validate that the union of values in <code>members</code> and <code>mp-members</code>
 is equal to the values of <code>src-members</code> with the registry names removed from set
 references. All values <span class="bcp14">MUST</span> be combined, regardless if they were listed in
 one attribute, or in multiple repetitions of the attribute.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
 <p id="section-3.1-2">This ensures that the new <code>src-members</code> can be used, providing the benefits
-for updated software, while still having a consistent <code>(mp-)members</code> available
+for updated resolver software, while still having a consistent <code>(mp-)members</code> available
 for older software.<a href="#section-3.1-2" class="pilcrow">¶</a></p>
 <p id="section-3.1-3">IRR registry software is <span class="bcp14">RECOMMENDED</span> to make the <code>src-members</code> attribute
 mandatory on all new as-set/route-set objects, and <span class="bcp14">MAY</span> make it required when modifying
 existing objects.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
-<p id="section-3.1-4">This may appear to conflict with the <span><a href="#resolving" class="internal xref">section on resolving</a> (<a href="#resolving" class="auto internal xref">Section 2.3</a>)</span>,
+<p id="section-3.1-4">For clarity, this may appear to conflict with the <span><a href="#resolving" class="internal xref">section on resolving</a> (<a href="#resolving" class="auto internal xref">Section 2.3</a>)</span>,
 which says IRR software must not consider <code>(mp-)members</code> when <code>src-members</code>
 is present. However, that section is about resolving a query on IRR data,
 this section is about processing object creation and modification 
@@ -1670,11 +1673,12 @@ of <code>src-members</code>, with the IRR registry prefix removed from reference
 <p id="section-3.2-4">The registry <span class="bcp14">MAY</span> return an informational message to the user about
 the modifications.
 The objects <span class="bcp14">MUST NOT</span> be modified if already submitted with any
-<code>members</code> or <code>mp-members</code> attribute, though the validation rules noted
-above <span class="bcp14">MUST</span> still be applied.
-Non-authoritative servers <span class="bcp14">MUST NOT</span> generate <code>src-members</code> automatically.<a href="#section-3.2-4" class="pilcrow">¶</a></p>
+<code>members</code> or <code>mp-members</code> attribute, though the <span><a href="#validation" class="internal xref">validation rules noted
+earlier</a> (<a href="#validation" class="auto internal xref">Section 3.1</a>)</span> <span class="bcp14">MUST</span> still be applied.
+Non-authoritative servers <span class="bcp14">MUST NOT</span> generate <code>members</code> or <code>mp-members</code>
+automatically.<a href="#section-3.2-4" class="pilcrow">¶</a></p>
 <p id="section-3.2-5">IRR registry software <span class="bcp14">MUST NOT</span> attempt to automatically derive
-<code>src-members</code> from <code>(mp-)members</code>, as this can not be done reliably.<a href="#section-3.2-5" class="pilcrow">¶</a></p>
+<code>src-members</code> from <code>(mp-)members</code>, as this cannot be done reliably.<a href="#section-3.2-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="multiple-references-to-the-same-primary-key">
@@ -1698,11 +1702,11 @@ source: EXAMPLE
           </figcaption></figure>
 <p id="section-3.3-3">The IRR registry software <span class="bcp14">MUST</span> verify that, without their registry prefix,
 all references from <code>src-members</code> are unique.<a href="#section-3.3-3" class="pilcrow">¶</a></p>
-<p id="section-3.3-4">This avoids ambiguity regarding backwards compatibility with <code>(mp-)members</code>
+<p id="section-3.3-4">This reduces ambiguity regarding backwards compatibility with <code>(mp-)members</code>
 described earlier.
 If allowed, the attribute <code>src-members: RIPE::AS-OTHER, ARIN::AS-OTHER</code> would
 refer to two different sets, whereas the translation <code>mp-members: AS-OTHER</code>
-only refers one set.<a href="#section-3.3-4" class="pilcrow">¶</a></p>
+only refers to one set.<a href="#section-3.3-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1722,11 +1726,11 @@ only refers one set.<a href="#section-3.3-4" class="pilcrow">¶</a></p>
       </h2>
 <p id="section-5-1">This document removes a potential security issue where routing
 policy could be manipulated by maliciously creating set objects,
-which could be picked over legitimate objects.<a href="#section-5-1" class="pilcrow">¶</a></p>
+which could be used in favor of legitimate objects.<a href="#section-5-1" class="pilcrow">¶</a></p>
 <p id="section-5-2">While not a new issue, references between set objects can be
 circular, and software <span class="bcp14">MUST</span> detect such cases while resolving.
-It <span class="bcp14">MAY</span> also choose to limit depth or size of their resolving
-to avoid excessive resource use.<a href="#section-5-2" class="pilcrow">¶</a></p>
+It is <span class="bcp14">RECOMMENDED</span> to also limit the depth or size of their resolving
+to prevent excessive resource use.<a href="#section-5-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-normative-references">
