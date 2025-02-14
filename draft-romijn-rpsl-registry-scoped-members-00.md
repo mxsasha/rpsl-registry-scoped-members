@@ -42,7 +42,7 @@ informative:
 This document updates {{RFC2622}} and {{RFC4012}} by specifying `src-members`,
 a new attribute on as-set and route-set
 objects in the Routing Policy Specification Language (RPSL).
-This attribute allows a specific registry to be specified for each member
+This attribute allows a specific registry to be defined for each member
 in a set, avoiding problematic ambiguity when resolving set members.
 A new validation rule allows gradual upgrades and backwards compatibility.
 
@@ -56,23 +56,25 @@ These are among the most common objects in the Internet Routing Registry (IRR) s
 These sets can either reference a direct member of the set
 (such as an AS number, IP prefix, etc.), or additional sets which themselves have
 their own direct members and/or reference yet more sets, ad infinitum.
-In both cases, this referencing uses the members and mp-members
+In both cases, this referencing uses the `members` and `mp-members`
 attributes {{RFC4012}}.
 Server and client software can follow these references to 
 resolve a set down to its members, a set of prefixes or ASes.
 
 A set may refer to another set by including the primary key in its
-`(mp-)members` attribute, which may be in the same, or another IRR registry.
+`(mp-)members` attribute.
+The referred set may be in the same or in another IRR registry.
 It is not possible to specify the IRR registry of
-the referred set. This makes primary key collisions possible
+the referred set. This can lead to primary key collisions
 when resolving a set\:
 
 1. There are multiple significant IRR registries.
 1. Sets often reference objects in registries other than the registry the set itself is stored in.
 1. There is no guaranteed uniqueness of object primary keys amongst the different registries.
-1. Hence, multiple objects may exist in the IRR system with the same name, making references to them ambiguous.
-1. Many IRR servers will mirror data from multiple IRRs, meaning that even within
-   a single server, there are usually collisions.
+1. Hence, multiple objects may exist in the IRR system with the same primary key, 
+   making references to them ambiguous.
+1. Many IRR servers will mirror data from multiple IRR registries,
+   meaning that even within a single server, there are usually collisions.
 
 The ambiguity encountered when resolving set members can result in either an
 incorrect RPSL object being chosen, because an object with the same primary key
@@ -83,7 +85,7 @@ the correct IRR registry.
 
 Including members from the incorrect RPSL object can result in the computation of
 unintentional routing policy information, which is then deployed to network infrastructure.
-That could cause route leaking, or worst, aid in route hijacking.
+That could cause route leaking, or worse, aid in route hijacking.
 This has been seen multiple times on the public Internet.
 
 If intended policies are not included, because the object was not found,
@@ -106,12 +108,12 @@ However, the problem persists\:
 - {{RFC2725}} Section 9.6 defines external repository (IRR) references.
   This allows for the correct IRR registry to be specified for a set member object
   by using the SOURCE:: notation however, this syntax isn't supported in the members
-  filed of set objects.
+  field of set objects.
 
-To solve this, this documents adds `src-members` to as-set and route-set objects,
+To solve this, this document adds `src-members` to as-set and route-set objects,
 using a IRR registry name prefix with a double colon.
 For example\: "RIPE::AS-EXAMPLE", to refer specifically to an object "AS-EXAMPLE"
-in the IRR "RIPE". This format is already widely used informally by operators,
+in the IRR registry "RIPE". This format is already widely used informally by operators,
 including in platforms such as PeeringDB.
 Continued availability of existing `(mp-)members` attributes
 together with new validation rules, ensures backwards compatibility.
@@ -125,7 +127,8 @@ together with new validation rules, ensures backwards compatibility.
 ## as-set class
 
 The new `src-members` attribute on as-set is similar to the `members` attribute
-from {{RFC2622}}, except that the AS set name MUST be prefixed with a registry name.
+from {{RFC2622}}, except that the AS set name MUST be prefixed with a registry name
+and a double colon.
 
 {:vspace}
 Attribute:
@@ -144,7 +147,7 @@ Type:
 
 The new `src-members` attribute on route-set is similar to the `mp-members` attribute 
 from {{RFC4012}}, except that any references to set names MUST 
-be prefixed with a registry name.
+be prefixed with a registry name and a double colon.
 
 {:vspace}
 Attribute:
@@ -160,8 +163,8 @@ Type:
 
 ## Resolving members through `src-members` {#resolving}
 
-When IRR software is resolving the members of a set which has a `src-members`
-attribute as part of a query,
+When IRR software processes a query, and is resolving the members of a set which
+has a `src-members` attribute,
 the resolver MUST NOT consider the contents of the `members` or `mp-members`
 attribute. This is consistent with {{RFC2622}} section 10.2.
 
@@ -171,7 +174,7 @@ If the IRR registry is unknown to the resolver, no set can match the reference.
 
 When an as-set/route-set does not contain an `src-members` attribute, the resolver
 SHOULD consider the values of `members` and `mp-members`.
-These objects may still be encountered if they were created or updated before
+These objects may be encountered if they were created or updated before
 adoption of `src-members`, or the objects have not been updated since.
 If references are found to a set, and there are multiple sets
 with this primary key known to the resolver, the behavior is
@@ -180,7 +183,7 @@ not defined by this document as this was a previously existing problem.
 Note that the restriction to a specific IRR registry name is only used
 to select the correct IRR registry to retrieve the referred object and its
 attributes.
-When recursive resolving, if that set has references to further sets,
+During recursive resolving, if that set has references to further sets,
 those MUST be retrieved from a potentially different registry (either the
 registry specified in the `src-members` attribute if that attribute is present,
 or the existing source selection algorithm the IRR server currently uses if
@@ -213,37 +216,37 @@ If all mentioned registries are enabled, RS-FIRST would resolve to AS64500.
 
 Existing IRR software will not be aware of the new `src-members` attribute
 and instead refer to `(mp-)members`.
-This is also why the existing attributes can not be modified - this software
-would consider e.g. `RIPE::AS-EXAMPLE` as the full primary key, and fail
+This is also why the existing attributes are not modified - this existing software
+would consider e.g. `RIPE::AS-EXAMPLE` as the full primary key of a set, and fail
 to look up the reference as intended.
 
 Existing IRR objects may also not be updated with `src-members` for some time,
-as this can not be done automatically.
+as this cannot be done automatically.
 Deployment in both software and objects will be a gradual process, however,
 even partial deployment will reduce the potential for issues from reference
 mixups.
 
 In order to keep support for existing IRR software, the contents of
 `src-members` must match `(mp-)members` as close as possible,
-which the IRR server can ensure.
+which the IRR server will ensure.
 
-## Additional validation
+## Additional validation  {#validation}
 
 When an authoritative IRR registry processes a set object with a `src-members`
-attribute, it MUST ensure that the union of values in `members` and `mp-members`
+attribute, it MUST validate that the union of values in `members` and `mp-members`
 is equal to the values of `src-members` with the registry names removed from set
 references. All values MUST be combined, regardless if they were listed in
 one attribute, or in multiple repetitions of the attribute.
 
 This ensures that the new `src-members` can be used, providing the benefits
-for updated software, while still having a consistent `(mp-)members` available
+for updated resolver software, while still having a consistent `(mp-)members` available
 for older software.
 
 IRR registry software is RECOMMENDED to make the `src-members` attribute
 mandatory on all new as-set/route-set objects, and MAY make it required when modifying
 existing objects.
 
-This may appear to conflict with the [section on resolving](#resolving),
+For clarity, this may appear to conflict with the [section on resolving](#resolving),
 which says IRR software must not consider `(mp-)members` when `src-members`
 is present. However, that section is about resolving a query on IRR data,
 this section is about processing object creation and modification 
@@ -295,12 +298,13 @@ Specifically, for authoritative IRR registries\:
 The registry MAY return an informational message to the user about
 the modifications.
 The objects MUST NOT be modified if already submitted with any
-`members` or `mp-members` attribute, though the validation rules noted
-above MUST still be applied.
-Non-authoritative servers MUST NOT generate `src-members` automatically.
+`members` or `mp-members` attribute, though the [validation rules noted
+earlier](#validation) MUST still be applied.
+Non-authoritative servers MUST NOT generate `members` or `mp-members`
+automatically.
 
 IRR registry software MUST NOT attempt to automatically derive
-`src-members` from `(mp-)members`, as this can not be done reliably.
+`src-members` from `(mp-)members`, as this cannot be done reliably.
 
 
 ## Multiple references to the same primary key
@@ -319,11 +323,11 @@ source: EXAMPLE
 The IRR registry software MUST verify that, without their registry prefix,
 all references from `src-members` are unique.
 
-This avoids ambiguity regarding backwards compatibility with `(mp-)members`
+This reduces ambiguity regarding backwards compatibility with `(mp-)members`
 described earlier.
 If allowed, the attribute `src-members: RIPE::AS-OTHER, ARIN::AS-OTHER` would
 refer to two different sets, whereas the translation `mp-members: AS-OTHER`
-only refers one set.
+only refers to one set.
 
 # IANA Considerations {#IANA}
 
@@ -333,11 +337,11 @@ This memo includes no request to IANA.
 
 This document removes a potential security issue where routing
 policy could be manipulated by maliciously creating set objects,
-which could be picked over legitimate objects.
+which could be used in favor of legitimate objects.
 
 While not a new issue, references between set objects can be
 circular, and software MUST detect such cases while resolving.
-It MAY also choose to limit depth or size of their resolving
-to avoid excessive resource use.
+It is RECOMMENDED to also limit the depth or size of their resolving
+to prevent excessive resource use.
 
 --- back
