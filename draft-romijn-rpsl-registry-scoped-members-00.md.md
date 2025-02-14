@@ -96,7 +96,7 @@ There is no current way to prevent such ambiguity during set member resolution,
 both for operators who create the legitimate objects and those who try to resolve them.
 
 Two previous enhancements to reduce set name collisions have been standardized.
-however, the problem persists\:
+However, the problem persists\:
 
 - {{RFC2622}} Section 5.1 defines hierarchical set names, such as `AS65000:AS-EXAMPLE`
   which may also have additional authorization requirements for the referred aut-num.
