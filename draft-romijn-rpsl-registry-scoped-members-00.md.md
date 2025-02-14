@@ -184,7 +184,7 @@ When recursive resolving, if that set has references to further sets,
 those MUST be retrieved from a potentially different registry (either the
 registry specified in the `src-members` attribute if that attribute is present,
 or the existing source selection algorithm the IRR server currently uses if
-resolving using `(mp-)members`. In other words, the restriction of the lookup
+resolving using `(mp-)members`). In other words, the restriction of the lookup
 to a specific IRR registry does not cascade.
 
 Example\:
