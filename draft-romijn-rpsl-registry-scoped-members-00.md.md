@@ -286,11 +286,11 @@ Specifically, for authoritative IRR registries\:
 * It is RECOMMENDED that when creating/updating a route-set object
   with a `src-members` attribute, but without both a `members` and `mp-members`
   attribute, the software fills the `mp-members` attribute automatically with the contents
-  of `src-members`, with IRR registry prefix removed from references.
+  of `src-members`, with the IRR registry prefix removed from references.
 * It is RECOMMENDED that when creating/updating an as-set object
   with a `src-members` attribute, but without a `members`
   attribute, the software fills the `members` attribute automatically with the contents
-  of `src-members`, with IRR registry prefix removed from references.
+  of `src-members`, with the IRR registry prefix removed from references.
 
 The registry MAY return an informational message to the user about
 the modifications.
