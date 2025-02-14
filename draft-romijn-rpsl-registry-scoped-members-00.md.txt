@@ -4,9 +4,9 @@
 
 Network Working Group                                          S. Romijn
 Internet-Draft                                            Reliably Coded
-Updates: 2622, 4012 (if approved)                        7 February 2025
-Intended status: Informational                                          
-Expires: 11 August 2025
+Updates: 2622, 4012 (if approved)                             J. Bensley
+Intended status: Informational                           Inter.link GmbH
+Expires: 18 August 2025                                 14 February 2025
 
 
               Registry scoped members for RPSL set objects
@@ -36,7 +36,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 11 August 2025.
+   This Internet-Draft will expire on 18 August 2025.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Romijn                   Expires 11 August 2025                 [Page 1]
+Romijn & Bensley         Expires 18 August 2025                 [Page 1]
 
 Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
@@ -82,7 +82,7 @@ Table of Contents
    4.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   8
    5.  Security Considerations . . . . . . . . . . . . . . . . . . .   9
    6.  Normative References  . . . . . . . . . . . . . . . . . . . .   9
-   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   9
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   9
 
 1.  Introduction
 
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Romijn                   Expires 11 August 2025                 [Page 2]
+Romijn & Bensley         Expires 18 August 2025                 [Page 2]
 
 Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
@@ -134,11 +134,15 @@ Internet-Draft  Registry scoped members for RPSL set obj   February 2025
    IRR registry.  "Incorrect" and "wrong" in this context meaning: not
    as intended or expected by the operator.
 
-   With the former case, the result can be that unintentional routing
-   policy information maybe be computed and deployed to network
-   infrastructure, which could aid in route leaking, and in the worst
-   case, route hijacking.  This has been seen multiple times on the
-   public Internet.
+   Including members from the incorrect RPSL object can result in the
+   computation of unintentional routing policy information, which is
+   then deployed to network infrastructure.  That could cause route
+   leaking, or worst, aid in route hijacking.  This has been seen
+   multiple times on the public Internet.
+
+   If intended policies are not included, because the object was not
+   found, prefixes that should be accepted, are not, and the prefixes
+   are not reachable.
 
    With either case, routing policy information may end up missing and
    connectivity may be disrupted.
@@ -148,7 +152,7 @@ Internet-Draft  Registry scoped members for RPSL set obj   February 2025
    those who try to resolve them.
 
    Two previous enhancements to reduce set name collisions have been
-   standardized. however, the problem persists:
+   standardized.  However, the problem persists:
 
    *  [RFC2622] Section 5.1 defines hierarchical set names, such as
       AS65000:AS-EXAMPLE which may also have additional authorization
@@ -161,11 +165,7 @@ Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
 
 
-
-
-
-
-Romijn                   Expires 11 August 2025                 [Page 3]
+Romijn & Bensley         Expires 18 August 2025                 [Page 3]
 
 Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
@@ -221,7 +221,7 @@ Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
 
 
-Romijn                   Expires 11 August 2025                 [Page 4]
+Romijn & Bensley         Expires 18 August 2025                 [Page 4]
 
 Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
@@ -262,8 +262,8 @@ Internet-Draft  Registry scoped members for RPSL set obj   February 2025
    potentially different registry (either the registry specified in the
    src-members attribute if that attribute is present, or the existing
    source selection algorithm the IRR server currently uses if resolving
-   using (mp-)members.  In other words, the restriction of the lookup to
-   a specific IRR registry does not cascade.
+   using (mp-)members).  In other words, the restriction of the lookup
+   to a specific IRR registry does not cascade.
 
    Example:
 
@@ -277,7 +277,7 @@ Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
 
 
-Romijn                   Expires 11 August 2025                 [Page 5]
+Romijn & Bensley         Expires 18 August 2025                 [Page 5]
 
 Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
@@ -333,7 +333,7 @@ Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
 
 
-Romijn                   Expires 11 August 2025                 [Page 6]
+Romijn & Bensley         Expires 18 August 2025                 [Page 6]
 
 Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
@@ -389,7 +389,7 @@ Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
 
 
-Romijn                   Expires 11 August 2025                 [Page 7]
+Romijn & Bensley         Expires 18 August 2025                 [Page 7]
 
 Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
@@ -397,13 +397,13 @@ Internet-Draft  Registry scoped members for RPSL set obj   February 2025
    *  It is RECOMMENDED that when creating/updating a route-set object
       with a src-members attribute, but without both a members and mp-
       members attribute, the software fills the mp-members attribute
-      automatically with the contents of src-members, with IRR registry
-      prefix removed from references.
+      automatically with the contents of src-members, with the IRR
+      registry prefix removed from references.
 
    *  It is RECOMMENDED that when creating/updating an as-set object
       with a src-members attribute, but without a members attribute, the
       software fills the members attribute automatically with the
-      contents of src-members, with IRR registry prefix removed from
+      contents of src-members, with the IRR registry prefix removed from
       references.
 
    The registry MAY return an informational message to the user about
@@ -434,7 +434,7 @@ Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
    This avoids ambiguity regarding backwards compatibility with
    (mp-)members described earlier.  If allowed, the attribute src-
-   members: RIPE::AS-OTHER, ARIN::AS-OTHER would refers to two different
+   members: RIPE::AS-OTHER, ARIN::AS-OTHER would refer to two different
    sets, whereas the translation mp-members: AS-OTHER only refers one
    set.
 
@@ -445,7 +445,7 @@ Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
 
 
-Romijn                   Expires 11 August 2025                 [Page 8]
+Romijn & Bensley         Expires 18 August 2025                 [Page 8]
 
 Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
@@ -488,7 +488,7 @@ Internet-Draft  Registry scoped members for RPSL set obj   February 2025
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
 
-Author's Address
+Authors' Addresses
 
    Sasha Romijn
    Reliably Coded
@@ -501,4 +501,60 @@ Author's Address
 
 
 
-Romijn                   Expires 11 August 2025                 [Page 9]
+Romijn & Bensley         Expires 18 August 2025                 [Page 9]
+
+Internet-Draft  Registry scoped members for RPSL set obj   February 2025
+
+
+   James Bensley
+   Inter.link GmbH
+   Boxhagener Str. 80
+   10245 Berlin
+   Germany
+   Email: james@inter.link
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Romijn & Bensley         Expires 18 August 2025                [Page 10]
