@@ -81,12 +81,15 @@ is not found, because the resolving process didn't try to retrieve the object fr
 the correct IRR registry.
 "Incorrect" and "wrong" in this context meaning\: not as intended or expected by the operator.
 
-With the former case, the result can be that unintentional routing policy information
-maybe be computed and deployed to network infrastructure, which could aid in route leaking,
-and in the worst case, route hijacking.
+Including members from the incorrect RPSL object can result in the computation of
+unintentional routing policy information, which is then deployed to network infrastructure.
+That could cause route leaking, or worst, aid in route hijacking.
 This has been seen multiple times on the public Internet.
 
-With either case, routing policy information may end up missing and connectivity
+If intended policies are not included, because the object was not found,
+prefixes that should be accepted, are not, and the prefixes are not reachable.
+  
+With either case, routing policy information may end up missing and connectivity 
 may be disrupted.
 
 There is no current way to prevent such ambiguity during set member resolution,
