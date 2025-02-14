@@ -21,6 +21,14 @@ author:
   city: Amsterdam
   country: NL
   email: sasha@reliablycoded.nl
+- ins: J. Bensley
+  name: James Bensley
+  org: Inter.link GmbH
+  street: Boxhagener Str. 80
+  code: 10245
+  city: Berlin
+  country: DE
+  email: james@inter.link
 
 
 normative:
