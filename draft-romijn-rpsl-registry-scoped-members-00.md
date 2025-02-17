@@ -163,37 +163,37 @@ Type:
 
 ## Resolving members through `src-members` {#resolving}
 
-When IRR software processes a query, and is resolving the members of a set which
-has a `src-members` attribute,
-the resolver MUST NOT consider the contents of the `members` or `mp-members`
-attribute. This is consistent with {{RFC2622}} section 10.2.
-
-To find the referred set, the resolver MUST match on both the IRR registry
-name and the set's primary key.
-If the IRR registry is unknown to the resolver, no set can match the reference.
-
-When an as-set/route-set does not contain an `src-members` attribute, the resolver
-SHOULD consider the values of `members` and `mp-members`.
+IRR software that resolves the members of a set MUST have support for
+objects with and without `src-members`.
 These objects may be encountered if they were created or updated before
 adoption of `src-members`, or the objects have not been updated since.
-If references are found to a set, and there are multiple sets
-with this primary key known to the resolver, the behavior is
-not defined by this document as this was a previously existing problem.
+
+The resolving process is\:
+1. The resolver MUST include all members listed in the `src-members` attribute,
+   if any.
+   To find the referenced sets, the resolver MUST match on both the IRR registry
+   name and the set's primary key.
+   If the IRR registry is unknown to the resolver, no set can match the reference.
+1. The resolver MUST include all members listed in the `members` or `mp-members`
+   attributes, when their primary key was not already listed in `src-members`.
+   If there are multiple sets with a primary key known to the resolver,
+   the behavior is not defined by this document as this was a previously 
+   existing problem.
 
 Note that the restriction to a specific IRR registry name is only used
 to select the correct IRR registry to retrieve the referred object and its
-attributes.
-During recursive resolving, if that set has references to further sets,
-those MUST be retrieved from a potentially different registry (either the
-registry specified in the `src-members` attribute if that attribute is present,
-or the existing source selection algorithm the IRR server currently uses if
-resolving using `(mp-)members`). In other words, the restriction of the lookup
-to a specific IRR registry does not cascade.
+attributes. During recursive resolving, if that set has references to further sets,
+those MUST be retrieved from a potentially different registry. This could be either the
+registry specified in the `src-members` attribute, if present, or the existing source
+selection algorithm the IRR server currently uses when resolving using `(mp-)members`.
+In other words, the restriction of the lookup to a specific IRR registry does not cascade.
 
-Example\:
+### Resolving example
 
 ~~~~ rpsl
 route-set: RS-FIRST
+members: RS-SECOND
+mp-members: RS-LEGACY
 src-members: RIPE::RS-SECOND
 source: EXAMPLE
 
@@ -201,16 +201,37 @@ route-set: RS-SECOND
 members: RS-THIRD
 source: RIPE
 
+route-set: RS-SECOND
+members: AS65002
+source: OTHER
+
 route-set: RS-THIRD
 members: AS65000
 source: OTHER
-~~~~
-{: title='Objects for recursive lookups'}
 
-To perform a recursive resolve of RS-FIRST, the IRR software
-looks up RS-FIRST, then looks up RS-SECOND in the RIPE registry,
-then looks for RS-THIRD in any registry enabled for this query.
-If all mentioned registries are enabled, RS-FIRST would resolve to AS64500.
+route-set: RS-LEGACY
+members: AS65001
+source: OTHER
+~~~~
+{: title='Example objects for recursive lookups and attribute interactions'}
+
+To perform a recursive lookup of RS-FIRST, the IRR software will\:
+1. Look up RS-FIRST.
+1. Determine that the members of RS-FIRST are RS-SECOND (RIPE registry only)
+   and RS-LEGACY (any registry). The mention of RS-SECOND in the `members`
+   attribute is not included, as `RS-SECOND` is already listed in `src-members`.
+1. Look up RS-SECOND in RIPE, and RS-LEGACY in any registry.
+1. Determine that the members of RS-LEGACY are AS65001, and the members
+   of RS-SECOND are RS-THIRD.
+1. Look up RS-THIRD in any registry.
+1. Determine that the members of RS-THIRD are AS65000.
+
+If all mentioned registries are enabled, RS-FIRST would resolve to
+AS64500 and AS64501.
+
+The RS-SECOND object in the OTHER registry is never looked up,
+and AS65002 is not included. This would happen even if there was no
+RS-SECOND object found in RIPE.
 
 # Relation to `(mp-)members`
 
@@ -221,7 +242,9 @@ would consider e.g. `RIPE::AS-EXAMPLE` as the full primary key of a set, and fai
 to look up the reference as intended.
 
 Existing IRR objects may also not be updated with `src-members` for some time,
-as this cannot be done automatically.
+as this cannot be done automatically. Or, they may be partially updated
+as for large sets, finding the intended IRR registry references
+may take some time.
 Deployment in both software and objects will be a gradual process, however,
 even partial deployment will reduce the potential for issues from reference
 mixups.
@@ -233,9 +256,9 @@ which the IRR server will ensure.
 ## Additional validation  {#validation}
 
 When an authoritative IRR registry processes a set object with a `src-members`
-attribute, it MUST validate that the union of values in `members` and `mp-members`
-is equal to the values of `src-members` with the registry names removed from set
-references. All values MUST be combined, regardless if they were listed in
+attribute, it MUST validate that all references in `src-members`, with the registry
+names removed, are also listed in `members` or `mp-members`.
+All values MUST be combined, regardless if they were listed in
 one attribute, or in multiple repetitions of the attribute.
 
 This ensures that the new `src-members` can be used, providing the benefits
@@ -245,12 +268,6 @@ for older software.
 IRR registry software is RECOMMENDED to make the `src-members` attribute
 mandatory on all new as-set/route-set objects, and MAY make it required when modifying
 existing objects.
-
-For clarity, this may appear to conflict with the [section on resolving](#resolving),
-which says IRR software must not consider `(mp-)members` when `src-members`
-is present. However, that section is about resolving a query on IRR data,
-this section is about processing object creation and modification 
-in software that is authoritative for the IRR registry.
 
 Example of a valid object\:
 
@@ -275,7 +292,7 @@ src-members: 192.0.2.0/24, RIPE::RS-OTHER
 src-members: NTTCOM::RS-SRCMBRONLY, 2001:db8::/32
 source: EXAMPLE
 ~~~~
-{: title='Invalid object: inconsistent inclusion of RS-MPMBRONLY, NTTCOM::RS-SRCMBRONLY, and 200:db8::/36 vs /32'}
+{: title='Invalid object: inconsistent inclusion of NTTCOM::RS-SRCMBRONLY, and 200:db8::/36 vs /32. Note: the inclusion RS-MPMBRONLY only in mp-members is permitted.'}
 
 ## Automatic generation of `(mp-)members`
 
@@ -314,11 +331,9 @@ behavior\: having multiple references to the same RPSL primary key.
 This is not permitted, and IRR registry software MUST reject this\:
 
 ~~~~ rpsl
-as-set: AS-EXAMPLE
 src-members: RIPE::AS-OTHER, ARIN::AS-OTHER
-source: EXAMPLE
 ~~~~
-{: title='Invalid object using multiple registry prefixes with the same RPSL primary key'}
+{: title='Invalid object fragment using multiple registry prefixes with the same RPSL primary key'}
 
 The IRR registry software MUST verify that, without their registry prefix,
 all references from `src-members` are unique.
