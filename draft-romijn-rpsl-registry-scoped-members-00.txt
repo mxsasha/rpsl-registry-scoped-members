@@ -6,7 +6,7 @@ Network Working Group                                          S. Romijn
 Internet-Draft                                            Reliably Coded
 Updates: 2622, 4012 (if approved)                             J. Bensley
 Intended status: Informational                           Inter.link GmbH
-Expires: 21 August 2025                                 17 February 2025
+Expires: 24 August 2025                                 20 February 2025
 
 
               Registry scoped members for RPSL set objects
@@ -36,7 +36,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 21 August 2025.
+   This Internet-Draft will expire on 24 August 2025.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Romijn & Bensley         Expires 21 August 2025                 [Page 1]
+Romijn & Bensley         Expires 24 August 2025                 [Page 1]
 
 Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Romijn & Bensley         Expires 21 August 2025                 [Page 2]
+Romijn & Bensley         Expires 24 August 2025                 [Page 2]
 
 Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
@@ -165,7 +165,7 @@ Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
 
 
-Romijn & Bensley         Expires 21 August 2025                 [Page 3]
+Romijn & Bensley         Expires 24 August 2025                 [Page 3]
 
 Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
@@ -221,7 +221,7 @@ Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
 
 
-Romijn & Bensley         Expires 21 August 2025                 [Page 4]
+Romijn & Bensley         Expires 24 August 2025                 [Page 4]
 
 Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
@@ -247,7 +247,7 @@ Internet-Draft  Registry scoped members for RPSL set obj   February 2025
    sets, the resolver MUST match on both the IRR registry name and the
    set's primary key.  If the IRR registry is unknown to the resolver,
    no set can match the reference. 1.  The resolver MUST include all
-   members listed in the members or mp-members attributes, when their
+   members listed in the members and mp-members attributes, when their
    primary key was not already listed in src-members.  If there are
    multiple sets with a primary key known to the resolver, the behavior
    is not defined by this document as this was a previously existing
@@ -277,7 +277,7 @@ Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
 
 
-Romijn & Bensley         Expires 21 August 2025                 [Page 5]
+Romijn & Bensley         Expires 24 August 2025                 [Page 5]
 
 Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
@@ -333,7 +333,7 @@ Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
 
 
-Romijn & Bensley         Expires 21 August 2025                 [Page 6]
+Romijn & Bensley         Expires 24 August 2025                 [Page 6]
 
 Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
@@ -389,7 +389,7 @@ Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
 
 
-Romijn & Bensley         Expires 21 August 2025                 [Page 7]
+Romijn & Bensley         Expires 24 August 2025                 [Page 7]
 
 Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
@@ -445,7 +445,7 @@ Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
 
 
-Romijn & Bensley         Expires 21 August 2025                 [Page 8]
+Romijn & Bensley         Expires 24 August 2025                 [Page 8]
 
 Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
@@ -501,7 +501,7 @@ Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
 
 
-Romijn & Bensley         Expires 21 August 2025                 [Page 9]
+Romijn & Bensley         Expires 24 August 2025                 [Page 9]
 
 Internet-Draft  Registry scoped members for RPSL set obj   February 2025
 
@@ -557,4 +557,4 @@ Authors' Addresses
 
 
 
-Romijn & Bensley         Expires 21 August 2025                [Page 10]
+Romijn & Bensley         Expires 24 August 2025                [Page 10]

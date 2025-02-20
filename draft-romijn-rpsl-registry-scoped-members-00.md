@@ -174,7 +174,7 @@ The resolving process is\:
    To find the referenced sets, the resolver MUST match on both the IRR registry
    name and the set's primary key.
    If the IRR registry is unknown to the resolver, no set can match the reference.
-1. The resolver MUST include all members listed in the `members` or `mp-members`
+1. The resolver MUST include all members listed in the `members` and `mp-members`
    attributes, when their primary key was not already listed in `src-members`.
    If there are multiple sets with a primary key known to the resolver,
    the behavior is not defined by this document as this was a previously 
