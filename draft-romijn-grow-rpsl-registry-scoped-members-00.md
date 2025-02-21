@@ -6,7 +6,7 @@ submissiontype: IETF
 area: 
 wg:
 
-docname: draft-romijn-rpsl-registry-scoped-members-00
+docname: draft-romijn-grow-rpsl-registry-scoped-members-00
 updates: 2622, 4012
 
 title: Registry scoped members for RPSL set objects
@@ -39,7 +39,7 @@ informative:
 
 --- abstract
 
-This document updates {{RFC2622}} and {{RFC4012}} by specifying `src-members`,
+This document updates RFC2622 and RFC4012 by specifying `src-members`,
 a new attribute on as-set and route-set
 objects in the Routing Policy Specification Language (RPSL).
 This attribute allows a specific registry to be defined for each member
