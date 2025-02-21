@@ -6,7 +6,7 @@ submissiontype: IETF
 area: 
 wg:
 
-docname: draft-romijn-grow-rpsl-registry-scoped-members-00
+docname: draft-romijn-grow-rpsl-registry-scoped-members-01
 updates: 2622, 4012
 
 title: Registry scoped members for RPSL set objects
@@ -227,7 +227,7 @@ To perform a recursive lookup of RS-FIRST, the IRR software will\:
 1. Determine that the members of RS-THIRD are AS65000.
 
 If all mentioned registries are enabled, RS-FIRST would resolve to
-AS64500 and AS64501.
+AS65000 and AS65001.
 
 The RS-SECOND object in the OTHER registry is never looked up,
 and AS65002 is not included. This would happen even if there was no
