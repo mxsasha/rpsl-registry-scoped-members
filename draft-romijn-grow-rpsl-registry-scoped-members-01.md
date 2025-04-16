@@ -237,14 +237,14 @@ RS-SECOND object found in RIPE.
 
 When querying a set to resolve its members, IRR software typically
 expects the primary key of the set as a query parameter from the user.
-This reference is also ambiguous without referring a specific registry.
+This reference is also ambiguous without referring to a specific registry.
 
 IRR software MUST support a user-provided parameter to restrict the initial lookup
 of the set object to a specific registry.
 This restriction MUST NOT apply to further lookups performed by the IRR software
 when resolving the set, i.e., this restriction also does not cascade.
 
-For text based queries, IRR softwazre is RECOMMENDED to allow this parameter to be
+For text based queries, IRR software is RECOMMENDED to allow this parameter to be
 provided in similar syntax as the `src-members` value, e.g. RIPE::AS-DEMO,
 to query the object with primary key AS-DEMO in registry RIPE,
 and then continue resolving its members.
