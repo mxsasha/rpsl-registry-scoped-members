@@ -169,6 +169,7 @@ These objects may be encountered if they were created or updated before
 adoption of `src-members`, or the objects have not been updated since.
 
 The resolving process is\:
+
 1. The resolver MUST include all members listed in the `src-members` attribute,
    if any.
    To find the referenced sets, the resolver MUST match on both the IRR registry
@@ -216,6 +217,7 @@ source: OTHER
 {: title='Example objects for recursive lookups and attribute interactions'}
 
 To perform a recursive lookup of RS-FIRST, the IRR software will\:
+
 1. Look up RS-FIRST.
 1. Determine that the members of RS-FIRST are RS-SECOND (RIPE registry only)
    and RS-LEGACY (any registry). The mention of RS-SECOND in the `members`
