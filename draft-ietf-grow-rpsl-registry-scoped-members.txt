@@ -6,11 +6,11 @@ Network Working Group                                          S. Romijn
 Internet-Draft                                            Reliably Coded
 Updates: 2622, 4012 (if approved)                             J. Bensley
 Intended status: Informational                           Inter.link GmbH
-Expires: 25 October 2025                                   23 April 2025
+Expires: 24 October 2026                                   22 April 2026
 
 
               Registry scoped members for RPSL set objects
-           draft-romijn-grow-rpsl-registry-scoped-members-01
+            draft-ietf-grow-rpsl-registry-scoped-members-00
 
 Abstract
 
@@ -36,11 +36,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 25 October 2025.
+   This Internet-Draft will expire on 24 October 2026.
 
 Copyright Notice
 
-   Copyright (c) 2025 IETF Trust and the persons identified as the
+   Copyright (c) 2026 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
 
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Romijn & Bensley         Expires 25 October 2025                [Page 1]
+Romijn & Bensley         Expires 24 October 2026                [Page 1]
 
-Internet-Draft  Registry scoped members for RPSL set obj      April 2025
+Internet-Draft  Registry scoped members for RPSL set obj      April 2026
 
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Romijn & Bensley         Expires 25 October 2025                [Page 2]
+Romijn & Bensley         Expires 24 October 2026                [Page 2]
 
-Internet-Draft  Registry scoped members for RPSL set obj      April 2025
+Internet-Draft  Registry scoped members for RPSL set obj      April 2026
 
 
    2.  Sets often reference objects in registries other than the
@@ -165,9 +165,9 @@ Internet-Draft  Registry scoped members for RPSL set obj      April 2025
 
 
 
-Romijn & Bensley         Expires 25 October 2025                [Page 3]
+Romijn & Bensley         Expires 24 October 2026                [Page 3]
 
-Internet-Draft  Registry scoped members for RPSL set obj      April 2025
+Internet-Draft  Registry scoped members for RPSL set obj      April 2026
 
 
    *  [RFC2725] Section 9.6 defines external repository (IRR)
@@ -221,9 +221,9 @@ Internet-Draft  Registry scoped members for RPSL set obj      April 2025
 
 
 
-Romijn & Bensley         Expires 25 October 2025                [Page 4]
+Romijn & Bensley         Expires 24 October 2026                [Page 4]
 
-Internet-Draft  Registry scoped members for RPSL set obj      April 2025
+Internet-Draft  Registry scoped members for RPSL set obj      April 2026
 
 
    Value:
@@ -277,9 +277,9 @@ Internet-Draft  Registry scoped members for RPSL set obj      April 2025
 
 
 
-Romijn & Bensley         Expires 25 October 2025                [Page 5]
+Romijn & Bensley         Expires 24 October 2026                [Page 5]
 
-Internet-Draft  Registry scoped members for RPSL set obj      April 2025
+Internet-Draft  Registry scoped members for RPSL set obj      April 2026
 
 
    route-set: RS-FIRST
@@ -333,9 +333,9 @@ Internet-Draft  Registry scoped members for RPSL set obj      April 2025
 
 
 
-Romijn & Bensley         Expires 25 October 2025                [Page 6]
+Romijn & Bensley         Expires 24 October 2026                [Page 6]
 
-Internet-Draft  Registry scoped members for RPSL set obj      April 2025
+Internet-Draft  Registry scoped members for RPSL set obj      April 2026
 
 
    The RS-SECOND object in the OTHER registry is never looked up, and
@@ -389,9 +389,9 @@ Internet-Draft  Registry scoped members for RPSL set obj      April 2025
 
 
 
-Romijn & Bensley         Expires 25 October 2025                [Page 7]
+Romijn & Bensley         Expires 24 October 2026                [Page 7]
 
-Internet-Draft  Registry scoped members for RPSL set obj      April 2025
+Internet-Draft  Registry scoped members for RPSL set obj      April 2026
 
 
 3.1.  Additional validation
@@ -445,9 +445,9 @@ Internet-Draft  Registry scoped members for RPSL set obj      April 2025
 
 
 
-Romijn & Bensley         Expires 25 October 2025                [Page 8]
+Romijn & Bensley         Expires 24 October 2026                [Page 8]
 
-Internet-Draft  Registry scoped members for RPSL set obj      April 2025
+Internet-Draft  Registry scoped members for RPSL set obj      April 2026
 
 
    Specifically, for authoritative IRR registries:
@@ -501,9 +501,9 @@ Internet-Draft  Registry scoped members for RPSL set obj      April 2025
 
 
 
-Romijn & Bensley         Expires 25 October 2025                [Page 9]
+Romijn & Bensley         Expires 24 October 2026                [Page 9]
 
-Internet-Draft  Registry scoped members for RPSL set obj      April 2025
+Internet-Draft  Registry scoped members for RPSL set obj      April 2026
 
 
 4.  IANA Considerations
@@ -557,9 +557,9 @@ Authors' Addresses
 
 
 
-Romijn & Bensley         Expires 25 October 2025               [Page 10]
+Romijn & Bensley         Expires 24 October 2026               [Page 10]
 
-Internet-Draft  Registry scoped members for RPSL set obj      April 2025
+Internet-Draft  Registry scoped members for RPSL set obj      April 2026
 
 
    Email: sasha@reliablycoded.nl
@@ -613,4 +613,4 @@ Internet-Draft  Registry scoped members for RPSL set obj      April 2025
 
 
 
-Romijn & Bensley         Expires 25 October 2025               [Page 11]
+Romijn & Bensley         Expires 24 October 2026               [Page 11]
