@@ -377,4 +377,10 @@ circular, and software MUST detect such cases while resolving.
 It is RECOMMENDED to also limit the depth or size of their resolving
 to prevent excessive resource use.
 
+# Acknowledgments
+
+The authors would like to thank Job Snijders, Douglas Fischer and
+Stavros Konstantaras for their helpful suggestions and review of
+this document.
+
 --- back
