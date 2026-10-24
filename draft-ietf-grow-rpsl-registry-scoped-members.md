@@ -251,6 +251,13 @@ provided in similar syntax as the `src-members` value, e.g. RIPE::AS-DEMO,
 to query the object with primary key AS-DEMO in registry RIPE,
 and then continue resolving its members.
 
+IRR software MAY provide a query option to disable the
+processing of `src-members`. With that option, sets are resolved
+only through their `(mp-)members` attributes, as software without
+support for `src-members` would.
+This option helps users compare results with those from software that does
+not support `src-members`, and debug unexpected resolving results.
+
 # Relation to `(mp-)members`
 
 Existing IRR software will not be aware of the new `src-members` attribute
