@@ -362,6 +362,24 @@ If allowed, the attribute `src-members: RIPE::AS-OTHER, ARIN::AS-OTHER` would
 refer to two different sets, whereas the translation `mp-members: AS-OTHER`
 only refers to one set.
 
+# References in policy and filter attributes
+
+Set objects are also referenced outside of `(mp-)members`, such as
+policies in the `import`, `export`, `mp-import` and `mp-export`
+attributes of aut-num objects, `(mp-)filter` on filter-set,
+or similar attributes in other objects.
+These references are equally ambiguous, but out of scope for this
+document. The registry name prefix remains invalid syntax in these
+attributes.
+
+These attributes contain policy expressions rather than flat lists,
+so the backwards compatibility approach of this document does not work:
+having a parallel attribute would require validating that the two
+policies are equivalent, which is complex. Modifying the existing
+syntax would break existing parsers.
+Registry scoped references in these attributes are left for
+a potential future specification.
+
 # IANA Considerations {#IANA}
 
 This memo includes no request to IANA.
