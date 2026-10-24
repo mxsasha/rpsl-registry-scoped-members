@@ -337,6 +337,21 @@ Specifically, for authoritative IRR registries\:
   attribute, the software fills the `members` attribute automatically with the contents
   of `src-members`, with the IRR registry prefix removed from references.
 
+When filling these attributes automatically, it is RECOMMENDED that the
+software append a comment to each generated attribute, noting that its
+value was synthesized from `src-members`. This shows users where the
+data in the object originated, which aids debugging.
+Alternatively, software MAY record this
+in a generated `remarks` attribute instead.
+
+~~~~ rpsl
+route-set: RS-EXAMPLE
+src-members: 192.0.2.0/24, RIPE::RS-OTHER, 2001:db8::/32
+mp-members: 192.0.2.0/24, RS-OTHER, 2001:db8::/32 # synthesized from src-members
+source: EXAMPLE
+~~~~
+{: title='Object with automatically generated mp-members and origin comment'}
+
 The registry MAY return an informational message to the user about
 the modifications.
 The objects MUST NOT be modified if already submitted with any
