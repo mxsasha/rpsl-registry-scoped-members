@@ -6,7 +6,7 @@ submissiontype: IETF
 area: 
 wg:
 
-docname: draft-ietf-grow-rpsl-registry-scoped-members-00
+docname: draft-ietf-grow-rpsl-registry-scoped-members-01
 updates: 2622, 4012
 
 title: Registry scoped members for RPSL set objects
