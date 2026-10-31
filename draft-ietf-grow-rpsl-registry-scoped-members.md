@@ -136,7 +136,7 @@ Attribute:
 
 {:vspace}
 Value:
-: list of ([`as-number`] or [`registry-name`]::[`as-set-name`])
+: list of (\[`as-number`\] or \[`registry-name`\]::\[`as-set-name`\])
 
 {:vspace}
 Type:
@@ -155,7 +155,7 @@ Attribute:
 
 {:vspace}
 Value:
-: list of ([`ipv4-address-prefix-range`] or [`ipv6-address-prefix-range`] or [`registry-name`]::[`route-set-name`] or [`registry-name`]::[`as-set-name`] or [`as-number`] or [`registry-name`]::[`route-set-name`][`range-operator`])
+: list of (\[`ipv4-address-prefix-range`\] or \[`ipv6-address-prefix-range`\] or \[`registry-name`\]::\[`route-set-name`\] or \[`registry-name`\]::\[`as-set-name`\] or \[`as-number`\] or \[`registry-name`\]::\[`route-set-name`\]\[`range-operator`\])
 
 {:vspace}
 Type:

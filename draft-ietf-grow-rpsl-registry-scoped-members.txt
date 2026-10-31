@@ -5,12 +5,12 @@
 Network Working Group                                          S. Romijn
 Internet-Draft                                            Reliably Coded
 Updates: 2622, 4012 (if approved)                             J. Bensley
-Intended status: Informational                           Inter.link GmbH
-Expires: 24 October 2026                                   22 April 2026
+Intended status: Standards Track                         Inter.link GmbH
+Expires: 4 May 2027                                      31 October 2026
 
 
               Registry scoped members for RPSL set objects
-            draft-ietf-grow-rpsl-registry-scoped-members-00
+            draft-ietf-grow-rpsl-registry-scoped-members-01
 
 Abstract
 
@@ -36,7 +36,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 24 October 2026.
+   This Internet-Draft will expire on 4 May 2027.
 
 Copyright Notice
 
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Romijn & Bensley         Expires 24 October 2026                [Page 1]
+Romijn & Bensley           Expires 4 May 2027                   [Page 1]
 
-Internet-Draft  Registry scoped members for RPSL set obj      April 2026
+Internet-Draft  Registry scoped members for RPSL set obj    October 2026
 
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -73,18 +73,20 @@ Table of Contents
      1.1.  Requirements Language . . . . . . . . . . . . . . . . . .   4
    2.  The src-members attribute . . . . . . . . . . . . . . . . . .   4
      2.1.  as-set class  . . . . . . . . . . . . . . . . . . . . . .   4
-     2.2.  route-set class . . . . . . . . . . . . . . . . . . . . .   4
+     2.2.  route-set class . . . . . . . . . . . . . . . . . . . . .   5
      2.3.  Resolving members through src-members . . . . . . . . . .   5
-       2.3.1.  Resolving example . . . . . . . . . . . . . . . . . .   5
+       2.3.1.  Resolving example . . . . . . . . . . . . . . . . . .   6
        2.3.2.  Query parameters  . . . . . . . . . . . . . . . . . .   7
    3.  Relation to (mp-)members  . . . . . . . . . . . . . . . . . .   7
      3.1.  Additional validation . . . . . . . . . . . . . . . . . .   8
      3.2.  Automatic generation of (mp-)members  . . . . . . . . . .   8
      3.3.  Multiple references to the same primary key . . . . . . .   9
-   4.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  10
-   5.  Security Considerations . . . . . . . . . . . . . . . . . . .  10
-   6.  Normative References  . . . . . . . . . . . . . . . . . . . .  10
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  10
+   4.  References in policy and filter attributes  . . . . . . . . .  10
+   5.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  10
+   6.  Security Considerations . . . . . . . . . . . . . . . . . . .  10
+   7.  Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  11
+   8.  Normative References  . . . . . . . . . . . . . . . . . . . .  11
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  11
 
 1.  Introduction
 
@@ -105,14 +107,14 @@ Table of Contents
    of the referred set.  This can lead to primary key collisions when
    resolving a set:
 
-   1.  There are multiple significant IRR registries.
 
 
-
-Romijn & Bensley         Expires 24 October 2026                [Page 2]
+Romijn & Bensley           Expires 4 May 2027                   [Page 2]
 
-Internet-Draft  Registry scoped members for RPSL set obj      April 2026
+Internet-Draft  Registry scoped members for RPSL set obj    October 2026
 
+
+   1.  There are multiple significant IRR registries.
 
    2.  Sets often reference objects in registries other than the
        registry the set itself is stored in.
@@ -155,6 +157,19 @@ Internet-Draft  Registry scoped members for RPSL set obj      April 2026
    Two previous enhancements to reduce set name collisions have been
    standardized.  However, the problem persists:
 
+
+
+
+
+
+
+
+
+Romijn & Bensley           Expires 4 May 2027                   [Page 3]
+
+Internet-Draft  Registry scoped members for RPSL set obj    October 2026
+
+
    *  [RFC2622] Section 5.1 defines hierarchical set names, such as
       AS65000:AS-EXAMPLE which may also have additional authorization
       requirements for the referred aut-num.  However, this
@@ -162,13 +177,6 @@ Internet-Draft  Registry scoped members for RPSL set obj      April 2026
       allow the correct external IRR to be specified, if the object in
       question is not local to the IRR registry storing the referring
       set.
-
-
-
-Romijn & Bensley         Expires 24 October 2026                [Page 3]
-
-Internet-Draft  Registry scoped members for RPSL set obj      April 2026
-
 
    *  [RFC2725] Section 9.6 defines external repository (IRR)
       references.  This allows for the correct IRR registry to be
@@ -210,6 +218,14 @@ Internet-Draft  Registry scoped members for RPSL set obj      April 2026
    Type:
       optional, multi-valued
 
+
+
+
+Romijn & Bensley           Expires 4 May 2027                   [Page 4]
+
+Internet-Draft  Registry scoped members for RPSL set obj    October 2026
+
+
 2.2.  route-set class
 
    The new src-members attribute on route-set is similar to the mp-
@@ -218,13 +234,6 @@ Internet-Draft  Registry scoped members for RPSL set obj      April 2026
 
    Attribute:
       src-members
-
-
-
-Romijn & Bensley         Expires 24 October 2026                [Page 4]
-
-Internet-Draft  Registry scoped members for RPSL set obj      April 2026
-
 
    Value:
       list of ([ipv4-address-prefix-range] or [ipv6-address-prefix-
@@ -266,21 +275,14 @@ Internet-Draft  Registry scoped members for RPSL set obj      April 2026
    resolving using (mp-)members.  In other words, the restriction of the
    lookup to a specific IRR registry does not cascade.
 
-2.3.1.  Resolving example
 
 
-
-
-
-
-
-
-
-
-Romijn & Bensley         Expires 24 October 2026                [Page 5]
+Romijn & Bensley           Expires 4 May 2027                   [Page 5]
 
-Internet-Draft  Registry scoped members for RPSL set obj      April 2026
+Internet-Draft  Registry scoped members for RPSL set obj    October 2026
 
+
+2.3.1.  Resolving example
 
    route-set: RS-FIRST
    members: RS-SECOND
@@ -331,11 +333,9 @@ Internet-Draft  Registry scoped members for RPSL set obj      April 2026
 
 
 
-
-
-Romijn & Bensley         Expires 24 October 2026                [Page 6]
+Romijn & Bensley           Expires 4 May 2027                   [Page 6]
 
-Internet-Draft  Registry scoped members for RPSL set obj      April 2026
+Internet-Draft  Registry scoped members for RPSL set obj    October 2026
 
 
    The RS-SECOND object in the OTHER registry is never looked up, and
@@ -360,6 +360,13 @@ Internet-Draft  Registry scoped members for RPSL set obj      April 2026
    e.g.  RIPE::AS-DEMO, to query the object with primary key AS-DEMO in
    registry RIPE, and then continue resolving its members.
 
+   IRR software MAY provide a query option to disable the processing of
+   src-members.  With that option, sets are resolved only through their
+   (mp-)members attributes, as software without support for src-members
+   would.  This option helps users compare results with those from
+   software that does not support src-members, and debug unexpected
+   resolving results.
+
 3.  Relation to (mp-)members
 
    Existing IRR software will not be aware of the new src-members
@@ -382,16 +389,9 @@ Internet-Draft  Registry scoped members for RPSL set obj      April 2026
 
 
 
-
-
-
-
-
-
-
-Romijn & Bensley         Expires 24 October 2026                [Page 7]
+Romijn & Bensley           Expires 4 May 2027                   [Page 7]
 
-Internet-Draft  Registry scoped members for RPSL set obj      April 2026
+Internet-Draft  Registry scoped members for RPSL set obj    October 2026
 
 
 3.1.  Additional validation
@@ -445,9 +445,9 @@ Internet-Draft  Registry scoped members for RPSL set obj      April 2026
 
 
 
-Romijn & Bensley         Expires 24 October 2026                [Page 8]
+Romijn & Bensley           Expires 4 May 2027                   [Page 8]
 
-Internet-Draft  Registry scoped members for RPSL set obj      April 2026
+Internet-Draft  Registry scoped members for RPSL set obj    October 2026
 
 
    Specifically, for authoritative IRR registries:
@@ -463,6 +463,21 @@ Internet-Draft  Registry scoped members for RPSL set obj      April 2026
       software fills the members attribute automatically with the
       contents of src-members, with the IRR registry prefix removed from
       references.
+
+   When filling these attributes automatically, it is RECOMMENDED that
+   the software append a comment to each generated attribute, noting
+   that its value was synthesized from src-members.  This shows users
+   where the data in the object originated, which aids debugging.
+   Alternatively, software MAY record this in a generated remarks
+   attribute instead.
+
+   route-set: RS-EXAMPLE
+   src-members: 192.0.2.0/24, RIPE::RS-OTHER, 2001:db8::/32
+   mp-members: 192.0.2.0/24, RS-OTHER, 2001:db8::/32 # synthesized from src-members
+   source: EXAMPLE
+
+        Figure 4: Object with automatically generated mp-members and
+                               origin comment
 
    The registry MAY return an informational message to the user about
    the modifications.  The objects MUST NOT be modified if already
@@ -483,7 +498,15 @@ Internet-Draft  Registry scoped members for RPSL set obj      April 2026
 
    src-members: RIPE::AS-OTHER, ARIN::AS-OTHER
 
-         Figure 4: Invalid object fragment using multiple registry
+
+
+
+Romijn & Bensley           Expires 4 May 2027                   [Page 9]
+
+Internet-Draft  Registry scoped members for RPSL set obj    October 2026
+
+
+         Figure 5: Invalid object fragment using multiple registry
                   prefixes with the same RPSL primary key
 
    The IRR registry software MUST verify that, without their registry
@@ -495,22 +518,28 @@ Internet-Draft  Registry scoped members for RPSL set obj      April 2026
    sets, whereas the translation mp-members: AS-OTHER only refers to one
    set.
 
+4.  References in policy and filter attributes
 
+   Set objects are also referenced outside of (mp-)members, such as
+   policies in the import, export, mp-import and mp-export attributes of
+   aut-num objects, (mp-)filter on filter-set, or similar attributes in
+   other objects.  These references are equally ambiguous, but out of
+   scope for this document.  The registry name prefix remains invalid
+   syntax in these attributes.
 
+   These attributes contain policy expressions rather than flat lists,
+   so the backwards compatibility approach of this document does not
+   work: having a parallel attribute would require validating that the
+   two policies are equivalent, which is complex.  Modifying the
+   existing syntax would break existing parsers.  Registry scoped
+   references in these attributes are left for a potential future
+   specification.
 
-
-
-
-Romijn & Bensley         Expires 24 October 2026                [Page 9]
-
-Internet-Draft  Registry scoped members for RPSL set obj      April 2026
-
-
-4.  IANA Considerations
+5.  IANA Considerations
 
    This memo includes no request to IANA.
 
-5.  Security Considerations
+6.  Security Considerations
 
    This document removes a potential security issue where routing policy
    could be manipulated by maliciously creating set objects, which could
@@ -521,7 +550,25 @@ Internet-Draft  Registry scoped members for RPSL set obj      April 2026
    RECOMMENDED to also limit the depth or size of their resolving to
    prevent excessive resource use.
 
-6.  Normative References
+
+
+
+
+
+
+
+Romijn & Bensley           Expires 4 May 2027                  [Page 10]
+
+Internet-Draft  Registry scoped members for RPSL set obj    October 2026
+
+
+7.  Acknowledgments
+
+   The authors would like to thank Job Snijders, Douglas Fischer and
+   Stavros Konstantaras for their helpful suggestions and review of this
+   document.
+
+8.  Normative References
 
    [RFC2622]  Alaettinoglu, C., Villamizar, C., Gerich, E., Kessens, D.,
               Meyer, D., Bates, T., Karrenberg, D., and M. Terpstra,
@@ -554,14 +601,6 @@ Authors' Addresses
    Reliably Coded
    Amsterdam
    Netherlands
-
-
-
-Romijn & Bensley         Expires 24 October 2026               [Page 10]
-
-Internet-Draft  Registry scoped members for RPSL set obj      April 2026
-
-
    Email: sasha@reliablycoded.nl
 
 
@@ -574,43 +613,4 @@ Internet-Draft  Registry scoped members for RPSL set obj      April 2026
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Romijn & Bensley         Expires 24 October 2026               [Page 11]
+Romijn & Bensley           Expires 4 May 2027                  [Page 11]
